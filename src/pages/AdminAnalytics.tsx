@@ -214,7 +214,7 @@ export function AdminAnalytics() {
                 <Card className="p-6">
                   <p className="text-sm text-gray-600 font-medium">Conversion Rate</p>
                   <p className="text-2xl font-bold text-purple-600 mt-2">
-                    {analytics.conversionRate.toFixed(2)}%
+                    {analytics?.conversionRate ? analytics.conversionRate.toFixed(2) : '0.00'}%
                   </p>
                 </Card>
               </div>

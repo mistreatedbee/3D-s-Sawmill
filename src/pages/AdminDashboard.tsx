@@ -170,7 +170,7 @@ export const AdminDashboard = () => {
             </div>
             <div>
               <p className="text-xs text-gray-600 mb-1">Conversion Rate</p>
-              <p className="text-2xl font-bold">{analytics?.conversionRate?.toFixed(2) || 0}%</p>
+              <p className="text-2xl font-bold">{analytics?.conversionRate ? analytics.conversionRate.toFixed(2) : '0.00'}%</p>
             </div>
           </div>
         </Card>

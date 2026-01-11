@@ -239,7 +239,7 @@ export const Orders = () => {
                         Order Total
                       </p>
                       <p className="text-2xl font-bold text-blue-600">
-                        R {order.total.toFixed(2)}
+                        R {(order.total || 0).toFixed(2)}
                       </p>
                     </div>
 

@@ -385,7 +385,7 @@ const BulkOrdersSection = ({ onSuccess, onError }: any) => {
                   <div className="font-medium">{order.customerName}</div>
                   <div className="text-xs text-gray-600 dark:text-gray-400">{order.customerEmail}</div>
                 </td>
-                <td className="px-4 py-3 text-right font-bold">R {order.total.toFixed(2)}</td>
+                <td className="px-4 py-3 text-right font-bold">R {(order.total || 0).toFixed(2)}</td>
                 <td className="px-4 py-3">
                   <span className="inline-block px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 capitalize">
                     {order.status}

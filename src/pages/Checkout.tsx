@@ -164,10 +164,10 @@ export const Checkout = () => {
                     </div>
                     <div className="text-right">
                       <p className="font-bold text-gray-900 dark:text-white">
-                        R {(item.price * item.quantity).toFixed(2)}
+                        R {((item.price || 0) * item.quantity).toFixed(2)}
                       </p>
                       <p className="text-sm text-gray-600 dark:text-gray-400">
-                        R {item.price.toFixed(2)} each
+                        R {(item.price || 0).toFixed(2)} each
                       </p>
                     </div>
                   </div>
@@ -179,7 +179,7 @@ export const Checkout = () => {
                       Total:
                     </span>
                     <span className="text-3xl font-bold text-blue-600">
-                      R {cartTotal.toFixed(2)}
+                      R {(cartTotal || 0).toFixed(2)}
                     </span>
                   </div>
                 </div>
@@ -385,14 +385,14 @@ export const Checkout = () => {
                       <span>
                         {item.name} x {item.quantity}
                       </span>
-                      <span>R {(item.price * item.quantity).toFixed(2)}</span>
+                      <span>R {((item.price || 0) * item.quantity).toFixed(2)}</span>
                     </div>
                   ))}
                 </div>
                 <div className="border-t dark:border-gray-700 pt-4">
                   <div className="flex justify-between font-bold text-gray-900 dark:text-white">
                     <span>Total:</span>
-                    <span>R {cartTotal.toFixed(2)}</span>
+                    <span>R {(cartTotal || 0).toFixed(2)}</span>
                   </div>
                 </div>
               </Card>

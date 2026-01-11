@@ -439,7 +439,7 @@ export const AdminProducts = () => {
                       <div key={idx} className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600">
                         <span className="text-sm text-gray-700 dark:text-gray-300">
                           <strong>Qty:</strong> {bp.minQuantity}{bp.maxQuantity ? ` - ${bp.maxQuantity}` : '+'} units → 
-                          <strong> R{bp.discountPrice.toFixed(2)}</strong>
+                          <strong> R{(bp.discountPrice || 0).toFixed(2)}</strong>
                           {bp.discountPercentage && <span> ({bp.discountPercentage}% off)</span>}
                         </span>
                         <button

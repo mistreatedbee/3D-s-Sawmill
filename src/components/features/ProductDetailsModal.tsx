@@ -189,10 +189,10 @@ export function ProductDetailsModal({
             {/* Rating */}
             <div className="flex items-center gap-3">
               <span className="text-2xl text-yellow-500">
-                {'★'.repeat(Math.round(product.rating)) + '☆'.repeat(5 - Math.round(product.rating))}
+                {'★'.repeat(Math.round(product.rating || 0)) + '☆'.repeat(5 - Math.round(product.rating || 0))}
               </span>
               <span className="text-gray-600">
-                {product.rating.toFixed(1)} ({product.reviews} reviews)
+                {(product.rating || 0).toFixed(1)} ({product.reviews || 0} reviews)
               </span>
             </div>
 
