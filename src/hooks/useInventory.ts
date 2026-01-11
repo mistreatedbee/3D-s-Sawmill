@@ -8,28 +8,28 @@ export const useInventory = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch(`${API_URL}/products`);
-        if (!response.ok) throw new Error('Failed to fetch products');
-        const data = await response.json();
-        // Map MongoDB _id to id for frontend compatibility
-        const productsWithId = data.map((p: any) => ({
-          ...p,
-          id: p._id || p.id
-        }));
-        setProducts(productsWithId);
-        setError(null);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error');
-        console.error('Failed to fetch products:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const fetchProducts = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(`${API_URL}/products`);
+      if (!response.ok) throw new Error('Failed to fetch products');
+      const data = await response.json();
+      // Map MongoDB _id to id for frontend compatibility
+      const productsWithId = data.map((p: any) => ({
+        ...p,
+        id: p._id || p.id
+      }));
+      setProducts(productsWithId);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
+      console.error('Failed to fetch products:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchProducts();
   }, []);
   const updateProduct = async (updatedProduct: Product) => {
@@ -97,6 +97,7 @@ export const useInventory = () => {
     error,
     updateProduct,
     addProduct,
-    deleteProduct
+    deleteProduct,
+    refetch: fetchProducts
   };
 };

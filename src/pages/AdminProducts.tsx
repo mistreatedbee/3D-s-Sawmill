@@ -48,13 +48,14 @@ interface BulkPricingItem {
 }
 
 export const AdminProducts = () => {
-  const { products, isLoading: inventoryLoading } = useInventory();
+  const { products, isLoading: inventoryLoading, refetch } = useInventory();
   const { createProduct, updateProduct, deleteProduct, loading, error } = useAdminProducts();
 
   const [formData, setFormData] = useState<FormData>(DEFAULT_FORM_DATA);
   const [isEditing, setIsEditing] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [newTag, setNewTag] = useState('');
   const [bulkPricingForm, setBulkPricingForm] = useState<BulkPricingItem>({ minQuantity: 0, discountPrice: 0 });
@@ -149,6 +150,8 @@ export const AdminProducts = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage('');
+    
     try {
       if (isEditing && formData.id) {
         await updateProduct(formData.id, formData);
@@ -157,38 +160,67 @@ export const AdminProducts = () => {
         await createProduct(formData);
         setSuccessMessage('Product created successfully!');
       }
+      
       setFormData(DEFAULT_FORM_DATA);
       setShowForm(false);
       setIsEditing(false);
+      
+      // Refetch products to update the list
+      await refetch();
+      
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
-      console.error('Error:', err);
+      const errorMsg = err instanceof Error ? err.message : 'Failed to save product';
+      setErrorMessage(errorMsg);
+      console.error('Error saving product:', err);
+      setTimeout(() => setErrorMessage(''), 5000);
     }
   };
 
   const handleEdit = (product: Product) => {
+    const productData = product as any;
+    
     setFormData({
+      ...DEFAULT_FORM_DATA,
       ...product,
-      id: (product as any)._id || product.id,
+      id: productData._id || product.id,
+      // Ensure nested objects have proper structure
+      dimensions: productData.dimensions || DEFAULT_FORM_DATA.dimensions,
+      weight: productData.weight || DEFAULT_FORM_DATA.weight,
+      leadTime: productData.leadTime || DEFAULT_FORM_DATA.leadTime,
+      specifications: productData.specifications || DEFAULT_FORM_DATA.specifications,
+      images: Array.isArray(productData.images) ? productData.images : [],
+      tags: Array.isArray(productData.tags) ? productData.tags : [],
+      bulkPricing: Array.isArray(productData.bulkPricing) ? productData.bulkPricing : [],
     } as any);
+    
     setIsEditing(true);
     setShowForm(true);
   };
 
   const handleDelete = async (productId: string) => {
     if (!productId) {
+      setErrorMessage('Product ID is missing');
       console.error('Product ID is undefined');
       return;
     }
+    
     if (window.confirm('Are you sure you want to delete this product?')) {
+      setErrorMessage('');
+      
       try {
         await deleteProduct(productId);
         setSuccessMessage('Product deleted successfully!');
+        
+        // Refetch products to update the list
+        await refetch();
+        
         setTimeout(() => setSuccessMessage(''), 3000);
-        // Refresh the products list
-        window.location.reload();
       } catch (err) {
-        console.error('Error:', err);
+        const errorMsg = err instanceof Error ? err.message : 'Failed to delete product';
+        setErrorMessage(errorMsg);
+        console.error('Error deleting product:', err);
+        setTimeout(() => setErrorMessage(''), 5000);
       }
     }
   };
@@ -208,7 +240,11 @@ export const AdminProducts = () => {
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Product Management</h1>
         <Button 
           variant="primary" 
-          onClick={() => setShowForm(!showForm)}
+          onClick={() => {
+            setFormData(DEFAULT_FORM_DATA);
+            setIsEditing(false);
+            setShowForm(true);
+          }}
           leftIcon={<Plus className="h-4 w-4" />}
         >
           Add Product
@@ -222,10 +258,10 @@ export const AdminProducts = () => {
           {successMessage}
         </div>
       )}
-      {error && (
+      {(error || errorMessage) && (
         <div className="p-4 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 rounded-lg flex items-center gap-2">
           <AlertCircle className="h-5 w-5" />
-          {error}
+          {errorMessage || error}
         </div>
       )}
 
