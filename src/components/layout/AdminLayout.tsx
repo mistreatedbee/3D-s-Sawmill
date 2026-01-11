@@ -14,6 +14,11 @@ export const AdminLayout = () => {
     label: 'Dashboard',
     path: '/admin/dashboard'
   }, {
+    icon: Settings,
+    label: 'Site Settings',
+    path: '/admin/site-settings',
+    badge: 'Edit Content'
+  }, {
     icon: Package,
     label: 'Products',
     path: '/admin/products'
@@ -22,21 +27,21 @@ export const AdminLayout = () => {
     label: 'Inventory',
     path: '/admin/inventory'
   }, {
-    icon: ShoppingCart,
-    label: 'Orders',
-    path: '/admin/orders'
-  }, {
     icon: Image,
     label: 'Gallery',
     path: '/admin/gallery'
   }, {
-    icon: BarChart3,
-    label: 'Analytics',
-    path: '/admin/analytics'
-  }, {
     icon: MessageSquare,
     label: 'Testimonials',
     path: '/admin/testimonials'
+  }, {
+    icon: ShoppingCart,
+    label: 'Orders',
+    path: '/admin/orders'
+  }, {
+    icon: BarChart3,
+    label: 'Analytics',
+    path: '/admin/analytics'
   }, {
     icon: Tag,
     label: 'Promotions',
@@ -46,17 +51,13 @@ export const AdminLayout = () => {
     label: 'Reviews',
     path: '/admin/reviews'
   }, {
-    icon: Database,
-    label: 'Bulk Operations',
-    path: '/admin/bulk-operations'
-  }, {
     icon: Sparkles,
     label: 'Specials',
     path: '/admin/specials'
   }, {
-    icon: Settings,
-    label: 'Site Settings',
-    path: '/admin/site-settings'
+    icon: Database,
+    label: 'Bulk Operations',
+    path: '/admin/bulk-operations'
   }];
   return <div className="min-h-screen flex bg-gray-100 dark:bg-gray-900">
       {/* Sidebar */}

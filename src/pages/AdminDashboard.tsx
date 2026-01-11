@@ -6,7 +6,7 @@ import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import { formatters } from '../utils/formatters';
-import { Home } from 'lucide-react';
+import { Home, Package, Image, MessageSquare, Settings, Edit, ArrowRight } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -209,11 +209,144 @@ export const AdminDashboard = () => {
         </div>
       </Card>
 
+      {/* Content Management Section */}
+      <Card className="p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <Edit className="h-6 w-6 text-blue-600" />
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Content Management</h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Edit website content, products, gallery, and more</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Site Settings Card */}
+          <Card 
+            className="p-4 hover:shadow-lg transition-all duration-300 cursor-pointer border-2 border-blue-100 dark:border-blue-900 hover:border-blue-300 dark:hover:border-blue-700 bg-gradient-to-br from-blue-50 to-white dark:from-blue-900/20 dark:to-gray-800"
+            onClick={() => navigate('/admin/site-settings')}
+          >
+            <div className="flex flex-col items-center text-center space-y-3">
+              <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-full">
+                <Settings className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+              </div>
+              <div>
+                <h3 className="font-bold text-gray-900 dark:text-white text-lg">Site Settings</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  Edit hero, about, features, contact info
+                </p>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="w-full mt-2"
+                rightIcon={<ArrowRight className="h-4 w-4" />}
+              >
+                Edit Content
+              </Button>
+            </div>
+          </Card>
+
+          {/* Products Card */}
+          <Card 
+            className="p-4 hover:shadow-lg transition-all duration-300 cursor-pointer border-2 border-emerald-100 dark:border-emerald-900 hover:border-emerald-300 dark:hover:border-emerald-700 bg-gradient-to-br from-emerald-50 to-white dark:from-emerald-900/20 dark:to-gray-800"
+            onClick={() => navigate('/admin/products')}
+          >
+            <div className="flex flex-col items-center text-center space-y-3">
+              <div className="p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-full">
+                <Package className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
+              </div>
+              <div>
+                <h3 className="font-bold text-gray-900 dark:text-white text-lg">Products</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  Add, edit, delete timber products
+                </p>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="w-full mt-2"
+                rightIcon={<ArrowRight className="h-4 w-4" />}
+              >
+                Manage Products
+              </Button>
+            </div>
+          </Card>
+
+          {/* Gallery Card */}
+          <Card 
+            className="p-4 hover:shadow-lg transition-all duration-300 cursor-pointer border-2 border-purple-100 dark:border-purple-900 hover:border-purple-300 dark:hover:border-purple-700 bg-gradient-to-br from-purple-50 to-white dark:from-purple-900/20 dark:to-gray-800"
+            onClick={() => navigate('/admin/gallery')}
+          >
+            <div className="flex flex-col items-center text-center space-y-3">
+              <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-full">
+                <Image className="h-8 w-8 text-purple-600 dark:text-purple-400" />
+              </div>
+              <div>
+                <h3 className="font-bold text-gray-900 dark:text-white text-lg">Gallery</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  Add, delete gallery images
+                </p>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="w-full mt-2"
+                rightIcon={<ArrowRight className="h-4 w-4" />}
+              >
+                Manage Gallery
+              </Button>
+            </div>
+          </Card>
+
+          {/* Testimonials Card */}
+          <Card 
+            className="p-4 hover:shadow-lg transition-all duration-300 cursor-pointer border-2 border-amber-100 dark:border-amber-900 hover:border-amber-300 dark:hover:border-amber-700 bg-gradient-to-br from-amber-50 to-white dark:from-amber-900/20 dark:to-gray-800"
+            onClick={() => navigate('/admin/testimonials')}
+          >
+            <div className="flex flex-col items-center text-center space-y-3">
+              <div className="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-full">
+                <MessageSquare className="h-8 w-8 text-amber-600 dark:text-amber-400" />
+              </div>
+              <div>
+                <h3 className="font-bold text-gray-900 dark:text-white text-lg">Testimonials</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  Manage customer testimonials
+                </p>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="w-full mt-2"
+                rightIcon={<ArrowRight className="h-4 w-4" />}
+              >
+                Manage Testimonials
+              </Button>
+            </div>
+          </Card>
+        </div>
+
+        {/* Info Banner */}
+        <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+          <div className="flex items-start gap-3">
+            <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-full">
+              <Edit className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            </div>
+            <div className="flex-1">
+              <h4 className="font-semibold text-gray-900 dark:text-white mb-1">All Website Content is Editable</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Use <span className="font-semibold text-blue-600">Site Settings</span> to edit hero section, why choose us features, about section, and contact information. 
+                Changes appear immediately on the customer-facing website.
+              </p>
+            </div>
+          </div>
+        </div>
+      </Card>
+
       {/* Action Buttons */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Button className="w-full">View All Orders</Button>
-        <Button className="w-full">Manage Promotions</Button>
-        <Button className="w-full">View Inventory Alerts</Button>
+        <Button className="w-full" onClick={() => navigate('/admin/orders')}>View All Orders</Button>
+        <Button className="w-full" onClick={() => navigate('/admin/promotions')}>Manage Promotions</Button>
+        <Button className="w-full" onClick={() => navigate('/admin/analytics')}>View Analytics</Button>
       </div>
 
       {/* Loading State */}
