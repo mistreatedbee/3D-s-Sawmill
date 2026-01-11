@@ -192,6 +192,142 @@ export const AdminSiteSettings = () => {
       )
     },
     {
+      id: 'whychoose',
+      label: 'Why Choose Us',
+      content: (
+        <div className="space-y-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Why Choose Us Section</h3>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Section Subtitle
+              </label>
+              <Input
+                value={formData.whyChooseSubtitle || ''}
+                onChange={(e) => handleChange('whyChooseSubtitle', e.target.value)}
+                placeholder="Our Advantages"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Section Title
+              </label>
+              <Input
+                value={formData.whyChooseTitle || ''}
+                onChange={(e) => handleChange('whyChooseTitle', e.target.value)}
+                placeholder="Why Choose 3D'S SAWMILL?"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Section Description
+              </label>
+              <textarea
+                value={formData.whyChooseDescription || ''}
+                onChange={(e) => handleChange('whyChooseDescription', e.target.value)}
+                placeholder="We combine traditional craftsmanship with cutting-edge technology..."
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                rows={3}
+              />
+            </div>
+
+            <div className="border-t dark:border-gray-600 pt-4 mt-6">
+              <h4 className="font-semibold text-gray-900 dark:text-white mb-4">Feature 1</h4>
+              
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Feature Title
+                  </label>
+                  <Input
+                    value={formData.feature1Title || ''}
+                    onChange={(e) => handleChange('feature1Title', e.target.value)}
+                    placeholder="Sustainable Sourcing"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Feature Description
+                  </label>
+                  <textarea
+                    value={formData.feature1Description || ''}
+                    onChange={(e) => handleChange('feature1Description', e.target.value)}
+                    placeholder="All our timber comes from certified sustainable forests..."
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                    rows={3}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="border-t dark:border-gray-600 pt-4">
+              <h4 className="font-semibold text-gray-900 dark:text-white mb-4">Feature 2</h4>
+              
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Feature Title
+                  </label>
+                  <Input
+                    value={formData.feature2Title || ''}
+                    onChange={(e) => handleChange('feature2Title', e.target.value)}
+                    placeholder="Precision Milling"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Feature Description
+                  </label>
+                  <textarea
+                    value={formData.feature2Description || ''}
+                    onChange={(e) => handleChange('feature2Description', e.target.value)}
+                    placeholder="State-of-the-art equipment ensures exact dimensions..."
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                    rows={3}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="border-t dark:border-gray-600 pt-4">
+              <h4 className="font-semibold text-gray-900 dark:text-white mb-4">Feature 3</h4>
+              
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Feature Title
+                  </label>
+                  <Input
+                    value={formData.feature3Title || ''}
+                    onChange={(e) => handleChange('feature3Title', e.target.value)}
+                    placeholder="Nationwide Delivery"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Feature Description
+                  </label>
+                  <textarea
+                    value={formData.feature3Description || ''}
+                    onChange={(e) => handleChange('feature3Description', e.target.value)}
+                    placeholder="Reliable logistics network delivering to your construction site..."
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                    rows={3}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    },
+    {
       id: 'contact',
       label: 'Contact Info',
       content: (

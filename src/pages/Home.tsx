@@ -61,15 +61,14 @@ export const Home = () => {
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-50 to-emerald-100/50 border border-emerald-200 mb-4">
               <div className="w-2 h-2 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full animate-pulse"></div>
-              <span className="text-sm font-semibold text-emerald-800">Our Advantages</span>
+              <span className="text-sm font-semibold text-emerald-800">{settings?.whyChooseSubtitle || 'Our Advantages'}</span>
             </div>
             
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-              Why Choose <span className="text-emerald-700 dark:text-emerald-300">3D'S SAWMILL</span>?
+              {settings?.whyChooseTitle || "Why Choose 3D'S SAWMILL?"}
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300">
-              We combine traditional craftsmanship with cutting-edge technology to deliver 
-              premium timber solutions you can trust.
+              {settings?.whyChooseDescription || 'We combine traditional craftsmanship with cutting-edge technology to deliver premium timber solutions you can trust.'}
             </p>
           </motion.div>
         </div>
@@ -78,8 +77,8 @@ export const Home = () => {
           {[
             {
               id: 'sustainable-sourcing',
-              title: 'Sustainable Sourcing',
-              desc: 'All our timber comes from certified sustainable forests in South Africa, ensuring environmental responsibility and long-term supply.',
+              title: settings?.feature1Title || 'Sustainable Sourcing',
+              desc: settings?.feature1Description || 'All our timber comes from certified sustainable forests in South Africa, ensuring environmental responsibility and long-term supply.',
               icon: <Zap className="h-8 w-8 text-emerald-600" />,
               gradient: 'from-emerald-50 to-emerald-100/30',
               border: 'border-emerald-200/50 dark:border-emerald-700/30',
@@ -87,8 +86,8 @@ export const Home = () => {
             },
             {
               id: 'precision-milling',
-              title: 'Precision Milling',
-              desc: 'State-of-the-art equipment ensures exact dimensions and superior quality for every timber product, cut to your specifications.',
+              title: settings?.feature2Title || 'Precision Milling',
+              desc: settings?.feature2Description || 'State-of-the-art equipment ensures exact dimensions and superior quality for every timber product, cut to your specifications.',
               icon: <Layers className="h-8 w-8 text-amber-600" />,
               gradient: 'from-amber-50 to-amber-100/30',
               border: 'border-amber-200/50 dark:border-amber-700/30',
@@ -96,8 +95,8 @@ export const Home = () => {
             },
             {
               id: 'nationwide-delivery',
-              title: 'Nationwide Delivery',
-              desc: 'Reliable logistics network delivering to your construction site, anywhere in South Africa, with tracking and insurance.',
+              title: settings?.feature3Title || 'Nationwide Delivery',
+              desc: settings?.feature3Description || 'Reliable logistics network delivering to your construction site, anywhere in South Africa, with tracking and insurance.',
               icon: <Truck className="h-8 w-8 text-blue-600" />,
               gradient: 'from-blue-50 to-blue-100/30',
               border: 'border-blue-200/50 dark:border-blue-700/30',

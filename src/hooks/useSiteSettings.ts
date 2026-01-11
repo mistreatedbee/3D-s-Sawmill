@@ -18,6 +18,19 @@ export interface SiteSettings {
   aboutMission: string;
   aboutVision: string;
   
+  // Why Choose Us Section
+  whyChooseTitle: string;
+  whyChooseSubtitle: string;
+  whyChooseDescription: string;
+  
+  // Features
+  feature1Title: string;
+  feature1Description: string;
+  feature2Title: string;
+  feature2Description: string;
+  feature3Title: string;
+  feature3Description: string;
+  
   // Contact Information
   contactPhone: string;
   contactEmail: string;
