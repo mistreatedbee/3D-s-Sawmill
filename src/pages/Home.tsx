@@ -8,12 +8,14 @@ import { Link } from 'react-router-dom';
 import { useInventory } from '../hooks/useInventory';
 import { useTestimonials } from '../hooks/useTestimonials';
 import { useGallery } from '../hooks/useGallery';
+import { useSiteSettings } from '../hooks/useSiteSettings';
 import { Testimonial, Product } from '../types';
 
 export const Home = () => {
   const { products } = useInventory();
   const { testimonials } = useTestimonials();
   const { gallery } = useGallery();
+  const { settings } = useSiteSettings();
   const [displayTestimonials, setDisplayTestimonials] = useState<Testimonial[]>([]);
   const [currentGalleryIndex, setCurrentGalleryIndex] = useState(0);
   const [autoPlay, setAutoPlay] = useState(true);
@@ -471,7 +473,7 @@ export const Home = () => {
                     className="inline-flex items-center gap-3 text-2xl font-bold text-white hover:text-emerald-300 transition-colors"
                   >
                     <Phone className="h-6 w-6" />
-                    072 504 9184
+                    {settings?.contactPhone || '072 504 9184'}
                   </a>
                 </div>
               </div>

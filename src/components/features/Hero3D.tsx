@@ -3,8 +3,18 @@ import { motion } from 'framer-motion';
 import { Button } from '../ui/Button';
 import { ArrowRight, Layers, Truck, Zap, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useSiteSettings } from '../../hooks/useSiteSettings';
 
 export const Hero3D = () => {
+  const { settings, isLoading } = useSiteSettings();
+  
+  if (isLoading || !settings) {
+    return (
+      <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-stone-900 via-stone-800 to-emerald-900/30">
+        <div className="text-white text-xl">Loading...</div>
+      </div>
+    );
+  }
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-stone-900 via-stone-800 to-emerald-900/30">
       
@@ -115,7 +125,7 @@ export const Hero3D = () => {
                 <div className="relative w-2.5 h-2.5 bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full"></div>
               </div>
               <span className="text-sm font-semibold text-white">
-                Nationwide Delivery Available
+                {settings.heroBadgeText}
               </span>
             </motion.div>
 
@@ -125,19 +135,17 @@ export const Hero3D = () => {
                 <span className="relative">
                   <span className="absolute -inset-1 bg-gradient-to-r from-emerald-500/20 to-amber-500/20 blur-2xl"></span>
                   <span className="relative bg-gradient-to-r from-white via-emerald-100 to-emerald-200 bg-clip-text text-transparent">
-                    3D'S SAWMILL
+                    {settings.heroTitle}
                   </span>
                 </span>
                 <br />
                 <span className="text-3xl md:text-4xl lg:text-5xl font-semibold text-white mt-4 block">
-                  Premium Structural &<br />
-                  <span className="text-emerald-300">Industrial Timber</span>
+                  {settings.heroSubtitle}
                 </span>
               </h1>
 
               <p className="text-xl text-stone-200 leading-relaxed max-w-lg font-light">
-                Delivering superior timber solutions with sustainable practices and cutting-edge technology. 
-                Trusted by industry leaders for quality, reliability, and exceptional service.
+                {settings.heroDescription}
               </p>
             </div>
 

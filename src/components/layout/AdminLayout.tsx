@@ -53,6 +53,10 @@ export const AdminLayout = () => {
     icon: Sparkles,
     label: 'Specials',
     path: '/admin/specials'
+  }, {
+    icon: Settings,
+    label: 'Site Settings',
+    path: '/admin/site-settings'
   }];
   return <div className="min-h-screen flex bg-gray-100 dark:bg-gray-900">
       {/* Sidebar */}

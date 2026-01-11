@@ -5,8 +5,10 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Card } from '../components/ui/Card';
 import { Mail, Phone, MapPin, Send, Clock, CheckCircle, MessageSquare } from 'lucide-react';
+import { useSiteSettings } from '../hooks/useSiteSettings';
 
 export const Contact = () => {
+  const { settings, isLoading: settingsLoading } = useSiteSettings();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -28,8 +30,9 @@ export const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
+      const email = settings?.contactEmail || 'bruwer.danie@gmail.com';
       // Create mailto link with form data
-      const mailtoLink = `mailto:bruwer.danie@gmail.com?subject=${encodeURIComponent(`Contact Form: ${formData.subject}`)}&body=${encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`)}`;
+      const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(`Contact Form: ${formData.subject}`)}&body=${encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`)}`;
       
       // Open email client
       window.location.href = mailtoLink;
@@ -45,12 +48,14 @@ export const Contact = () => {
   };
 
   const handleCall = () => {
-    window.location.href = 'tel:0725049184';
+    const phone = settings?.contactPhone?.replace(/\s/g, '') || '0725049184';
+    window.location.href = `tel:${phone}`;
   };
 
   const handleWhatsApp = () => {
     const message = `Hi, I'm interested in your timber products. Can you provide more information?`;
-    const url = `https://wa.me/27725049184?text=${encodeURIComponent(message)}`;
+    const whatsapp = settings?.whatsappNumber || '27725049184';
+    const url = `https://wa.me/${whatsapp}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
   };
 
@@ -89,7 +94,7 @@ export const Contact = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-xl text-gray-600 mb-4"
           >
-            <span className="font-semibold text-emerald-800">"For all structural and industrial timber"</span>
+            <span className="font-semibold text-emerald-800">"{settings?.aboutSubtitle || 'For all structural and industrial timber'}"</span>
           </motion.p>
           
           <motion.p
@@ -98,7 +103,7 @@ export const Contact = () => {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="text-lg text-gray-600"
           >
-            Your trusted partner for premium timber solutions. Contact us today for quotes, information, or to discuss your project needs.
+            {settings?.aboutDescription || "Your trusted partner for premium timber solutions. Contact us today for quotes, information, or to discuss your project needs."}
           </motion.p>
         </div>
       </section>
@@ -123,7 +128,7 @@ export const Contact = () => {
               <h3 className="text-lg font-bold text-gray-900 mb-2">
                 Call Us
               </h3>
-              <p className="text-lg font-semibold text-emerald-700 mb-2">072 504 9184</p>
+              <p className="text-lg font-semibold text-emerald-700 mb-2">{settings?.contactPhone || '072 504 9184'}</p>
               <p className="text-sm text-gray-500 mt-2">
                 Click to call directly
               </p>
@@ -221,7 +226,7 @@ export const Contact = () => {
               <h3 className="text-lg font-bold text-gray-900 mb-2">
                 WhatsApp
               </h3>
-              <p className="text-lg font-semibold text-green-700 mb-2">072 504 9184</p>
+              <p className="text-lg font-semibold text-green-700 mb-2">{settings?.contactPhone || '072 504 9184'}</p>
               <p className="text-sm text-gray-500 mt-2">
                 Quick chat for quotes
               </p>
@@ -495,7 +500,7 @@ export const Contact = () => {
           className="bg-gradient-to-r from-emerald-600 to-emerald-800 rounded-2xl p-8 text-white text-center"
         >
           <h3 className="text-2xl font-bold mb-4">Need Immediate Assistance?</h3>
-          <p className="text-lg mb-6">Call us directly at <span className="font-bold text-2xl">072 504 9184</span></p>
+          <p className="text-lg mb-6">Call us directly at <span className="font-bold text-2xl">{settings?.contactPhone || '072 504 9184'}</span></p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               onClick={handleCall}

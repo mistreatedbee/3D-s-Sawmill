@@ -23,6 +23,7 @@ export { AdminTestimonials } from './AdminTestimonials';
 export { AdminBulkOperations } from './AdminBulkOperations';
 export { AdminSpecials } from './AdminSpecials';
 export { AdminPromotionalPages } from './AdminPromotionalPages';
+export { AdminSiteSettings } from './AdminSiteSettings';
 
 // Vendor Pages Export Index
 export { VendorInventory } from './VendorInventory';

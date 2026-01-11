@@ -26,6 +26,7 @@ import { AdminPromotions } from './pages/AdminPromotions';
 import { AdminReviewModeration } from './pages/AdminReviewModeration';
 import { AdminBulkOperations } from './pages/AdminBulkOperations';
 import { AdminSpecials } from './pages/AdminSpecials';
+import { AdminSiteSettings } from './pages/AdminSiteSettings';
 import { VendorInventory } from './pages/VendorInventory';
 import { Gallery } from './pages/Gallery';
 import { CustomerPortal } from './pages/CustomerPortal';
@@ -87,6 +88,7 @@ export function App() {
                 <Route path="reviews" element={<AdminReviewModeration />} />
                 <Route path="bulk-operations" element={<AdminBulkOperations />} />
                 <Route path="specials" element={<AdminSpecials />} />
+                <Route path="site-settings" element={<AdminSiteSettings />} />
                 <Route path="*" element={<div>Admin Page Not Found</div>} />
               </Route>
             </Routes>
