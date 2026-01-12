@@ -12,18 +12,35 @@ export const AdminSiteSettings = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
+  // Load current frontend content into form fields
   useEffect(() => {
     if (settings) {
       setFormData(settings);
+      setHasUnsavedChanges(false);
     }
   }, [settings]);
+
+  // Warn before leaving page with unsaved changes
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasUnsavedChanges]);
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev: any) => ({
       ...prev,
       [field]: value
     }));
+    setHasUnsavedChanges(true); // Mark as having unsaved changes
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,13 +51,23 @@ export const AdminSiteSettings = () => {
 
     try {
       await updateSettings(formData);
-      setSuccessMessage('Site settings updated successfully!');
+      setSuccessMessage('Site settings updated successfully! Changes are now live on the website.');
+      setHasUnsavedChanges(false); // Clear unsaved changes flag
       setTimeout(() => setSuccessMessage(''), 5000);
     } catch (err) {
-      setErrorMessage('Failed to update site settings');
+      setErrorMessage('Failed to update site settings. Please try again.');
       setTimeout(() => setErrorMessage(''), 5000);
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleDiscardChanges = () => {
+    if (window.confirm('Are you sure you want to discard all unsaved changes?')) {
+      setFormData(settings); // Reset to original settings
+      setHasUnsavedChanges(false);
+      setSuccessMessage('Changes discarded. Original content restored.');
+      setTimeout(() => setSuccessMessage(''), 3000);
     }
   };
 
@@ -57,8 +84,27 @@ export const AdminSiteSettings = () => {
     }
   };
 
-  if (isLoading || !formData) {
-    return <div className="p-8">Loading settings...</div>;
+  if (isLoading) {
+    return (
+      <div className="p-8 flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading current website content...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!formData) {
+    return (
+      <div className="p-8">
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+          <p className="text-yellow-800 dark:text-yellow-300">
+            No content found. Please run the seed script to initialize default content.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   const tabs = [
@@ -794,11 +840,27 @@ export const AdminSiteSettings = () => {
           </p>
           <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
             <p className="text-sm text-blue-800 dark:text-blue-300">
-              💡 <strong>Tip:</strong> Changes saved here will immediately reflect on the live website. Use the Gallery page to upload and manage images.
+              💡 <strong>How it works:</strong> Fields are pre-filled with current website content. Edit freely, then click "Save Changes" to update the live website.
             </p>
           </div>
+          {hasUnsavedChanges && (
+            <div className="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+              <p className="text-sm text-amber-800 dark:text-amber-300">
+                ⚠️ <strong>You have unsaved changes.</strong> Click "Save Changes" to update the website, or "Discard Changes" to cancel.
+              </p>
+            </div>
+          )}
         </div>
         <div className="flex gap-3">
+          {hasUnsavedChanges && (
+            <Button
+              variant="outline"
+              onClick={handleDiscardChanges}
+              className="border-amber-600 text-amber-700 hover:bg-amber-50"
+            >
+              Discard Changes
+            </Button>
+          )}
           <Button
             variant="outline"
             onClick={handleReset}
@@ -828,14 +890,38 @@ export const AdminSiteSettings = () => {
         <Card className="p-6">
           <Tabs tabs={tabs} />
 
-          <div className="flex justify-end gap-3 mt-8 pt-6 border-t dark:border-gray-700">
-            <Button
-              type="submit"
-              disabled={isSaving}
-              leftIcon={<Save className="h-4 w-4" />}
-            >
-              {isSaving ? 'Saving...' : 'Save Changes'}
-            </Button>
+          <div className="flex justify-between items-center mt-8 pt-6 border-t dark:border-gray-700">
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              {hasUnsavedChanges ? (
+                <span className="text-amber-600 dark:text-amber-400 font-medium">
+                  ● Unsaved changes
+                </span>
+              ) : (
+                <span className="text-emerald-600 dark:text-emerald-400 font-medium">
+                  ✓ All changes saved
+                </span>
+              )}
+            </div>
+            <div className="flex gap-3">
+              {hasUnsavedChanges && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleDiscardChanges}
+                  disabled={isSaving}
+                >
+                  Discard Changes
+                </Button>
+              )}
+              <Button
+                type="submit"
+                disabled={isSaving || !hasUnsavedChanges}
+                leftIcon={<Save className="h-4 w-4" />}
+                className={hasUnsavedChanges ? 'bg-emerald-600 hover:bg-emerald-700' : ''}
+              >
+                {isSaving ? 'Saving...' : 'Save Changes'}
+              </Button>
+            </div>
           </div>
         </Card>
       </form>
