@@ -158,10 +158,10 @@ export const Home = () => {
         >
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
             {[
-              { value: "30+", label: "Years Experience", suffix: "Since 1990" },
-              { value: "100%", label: "Quality Guarantee", suffix: "Premium Timber" },
-              { value: "24/7", label: "Support", suffix: "Always Available" },
-              { value: "500+", label: "Projects", suffix: "Completed" }
+              { value: settings?.stat1Value || "30+", label: settings?.stat1Label || "Years Experience", suffix: settings?.stat1Suffix || "Since 1990" },
+              { value: settings?.stat2Value || "100%", label: settings?.stat2Label || "Quality Guarantee", suffix: settings?.stat2Suffix || "Premium Timber" },
+              { value: settings?.stat3Value || "24/7", label: settings?.stat3Label || "Support", suffix: settings?.stat3Suffix || "Always Available" },
+              { value: settings?.stat4Value || "500+", label: settings?.stat4Label || "Projects", suffix: settings?.stat4Suffix || "Completed" }
             ].map((stat, i) => (
               <div key={i} className="text-center p-6 rounded-2xl bg-gradient-to-b from-white to-gray-50/50 border border-gray-200/50 dark:from-gray-800/30 dark:to-gray-900/20 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-lg transition-shadow">
                 <div className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-800 dark:from-emerald-400 dark:to-emerald-300 bg-clip-text text-transparent">
@@ -433,10 +433,10 @@ export const Home = () => {
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
                 <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                  Ready to Start Your Project?
+                  {settings?.ctaTitle || 'Ready to Start Your Project?'}
                 </h2>
                 <p className="text-xl text-emerald-100 mb-8 leading-relaxed">
-                  Get a custom quote for your specific timber requirements. Our experts are ready to assist you with the perfect timber solution.
+                  {settings?.ctaDescription || 'Get a custom quote for your specific timber requirements. Our experts are ready to assist you with the perfect timber solution.'}
                 </p>
                 
                 <div className="space-y-4 mb-8">
@@ -461,7 +461,7 @@ export const Home = () => {
                     size="lg" 
                     className="w-full bg-white text-emerald-900 hover:bg-emerald-50 text-lg py-6"
                   >
-                    Request Custom Quote
+                    {settings?.ctaButtonText || 'Request Custom Quote'}
                   </Button>
                 </Link>
                 

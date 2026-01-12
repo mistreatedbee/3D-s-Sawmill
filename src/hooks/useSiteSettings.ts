@@ -10,6 +10,7 @@ export interface SiteSettings {
   heroDescription: string;
   heroBadgeText: string;
   heroFeatures?: { text: string; icon: string }[];
+  heroImage?: string;
   
   // About Section
   aboutTitle: string;
@@ -17,6 +18,7 @@ export interface SiteSettings {
   aboutDescription: string;
   aboutMission: string;
   aboutVision: string;
+  aboutImage?: string;
   
   // Why Choose Us Section
   whyChooseTitle: string;
@@ -42,6 +44,35 @@ export interface SiteSettings {
   facebookUrl?: string;
   instagramUrl?: string;
   linkedinUrl?: string;
+  
+  // Footer Content
+  footerTagline?: string;
+  footerDescription?: string;
+  footerCopyrightText?: string;
+  
+  // Company Information
+  companyName?: string;
+  companyLogo?: string;
+  companyEstablished?: string;
+  
+  // CTA Section
+  ctaTitle?: string;
+  ctaDescription?: string;
+  ctaButtonText?: string;
+  
+  // Stats Section
+  stat1Value?: string;
+  stat1Label?: string;
+  stat1Suffix?: string;
+  stat2Value?: string;
+  stat2Label?: string;
+  stat2Suffix?: string;
+  stat3Value?: string;
+  stat3Label?: string;
+  stat3Suffix?: string;
+  stat4Value?: string;
+  stat4Label?: string;
+  stat4Suffix?: string;
   
   // SEO
   metaTitle: string;

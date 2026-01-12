@@ -1,7 +1,14 @@
 import { Link } from 'react-router-dom';
 import { Facebook, Instagram, Mail, MapPin, Phone, Truck, Shield, Trees, Clock } from 'lucide-react';
+import { useSiteSettings } from '../../hooks/useSiteSettings';
 
 export const Footer = () => {
+  const { settings, isLoading } = useSiteSettings();
+  
+  if (isLoading || !settings) {
+    return null; // or a footer skeleton
+  }
+  
   return (
     <footer className="relative overflow-hidden">
       {/* Background */}
@@ -28,11 +35,11 @@ export const Footer = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a 
-                href="tel:0725049184" 
+                href={`tel:${settings.contactPhone?.replace(/\s/g, '')}`}
                 className="inline-flex items-center justify-center px-6 py-3 bg-white text-emerald-700 font-semibold rounded-lg hover:bg-emerald-50 transition-all duration-300 shadow-lg hover:shadow-xl"
               >
                 <Phone className="h-5 w-5 mr-2" />
-                Call Now: 072 504 9184
+                Call Now: {settings.contactPhone}
               </a>
               <Link 
                 to="/contact" 
@@ -52,32 +59,35 @@ export const Footer = () => {
                 <div className="relative">
                   <div className="absolute -inset-4 bg-gradient-to-r from-emerald-500/20 to-amber-500/20 rounded-full blur-xl"></div>
                   <img 
-                    src="/logo.jpeg" 
-                    alt="3D'S SAWMILL Logo" 
+                    src={settings.companyLogo || '/logo.jpeg'} 
+                    alt={`${settings.companyName} Logo`}
                     className="relative w-14 h-14 object-cover rounded-xl border-2 border-white/20"
                   />
                 </div>
                 <div>
-                  <span className="font-bold text-2xl text-white">3D'S SAWMILL</span>
-                  <p className="text-emerald-300 text-sm font-medium mt-1">For all structural and industrial timber</p>
+                  <span className="font-bold text-2xl text-white">{settings.companyName}</span>
+                  <p className="text-emerald-300 text-sm font-medium mt-1">{settings.footerTagline}</p>
                 </div>
               </div>
               <p className="text-gray-300 leading-relaxed max-w-md">
-                Your trusted partner for premium timber solutions since 1990. We combine sustainable forestry 
-                practices with cutting-edge milling technology to deliver high-quality, reliable products.
+                {settings.footerDescription}
               </p>
               
               <div className="flex gap-4">
-                <a href="#" className="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-110">
-                  <Facebook className="h-5 w-5 text-white" />
-                </a>
-                <a href="#" className="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-110">
-                  <Instagram className="h-5 w-5 text-white" />
-                </a>
-                <a href="mailto:bruwer.danie@gmail.com" className="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-110">
+                {settings.facebookUrl && (
+                  <a href={settings.facebookUrl} target="_blank" rel="noopener noreferrer" className="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-110">
+                    <Facebook className="h-5 w-5 text-white" />
+                  </a>
+                )}
+                {settings.instagramUrl && (
+                  <a href={settings.instagramUrl} target="_blank" rel="noopener noreferrer" className="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-110">
+                    <Instagram className="h-5 w-5 text-white" />
+                  </a>
+                )}
+                <a href={`mailto:${settings.contactEmail}`} className="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-110">
                   <Mail className="h-5 w-5 text-white" />
                 </a>
-                <a href="https://wa.me/27725049184" target="_blank" rel="noopener noreferrer" className="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-110">
+                <a href={`https://wa.me/${settings.whatsappNumber}`} target="_blank" rel="noopener noreferrer" className="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-110">
                   <svg className="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.76.982.998-3.675-.236-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.9 6.994c-.004 5.45-4.438 9.88-9.888 9.88m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.333.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.333 11.893-11.892 0-3.18-1.24-6.162-3.495-8.411"/>
                   </svg>
@@ -119,24 +129,23 @@ export const Footer = () => {
                     <MapPin className="h-4 w-4 text-emerald-300" />
                   </div>
                   <div>
-                    <span className="text-gray-300 font-medium">Lothair 2370</span>
-                    <p className="text-gray-400 text-sm">South Africa</p>
+                    <span className="text-gray-300 font-medium">{settings.contactAddress}</span>
                   </div>
                 </li>
                 <li className="flex items-center gap-3">
                   <div className="p-2 bg-emerald-900/30 rounded-lg">
                     <Phone className="h-4 w-4 text-emerald-300" />
                   </div>
-                  <a href="tel:0725049184" className="text-gray-300 hover:text-emerald-300 transition-colors">
-                    <span className="font-medium">072 504 9184</span>
+                  <a href={`tel:${settings.contactPhone?.replace(/\s/g, '')}`} className="text-gray-300 hover:text-emerald-300 transition-colors">
+                    <span className="font-medium">{settings.contactPhone}</span>
                   </a>
                 </li>
                 <li className="flex items-center gap-3">
                   <div className="p-2 bg-emerald-900/30 rounded-lg">
                     <Mail className="h-4 w-4 text-emerald-300" />
                   </div>
-                  <a href="mailto:bruwer.danie@gmail.com" className="text-gray-300 hover:text-emerald-300 transition-colors break-all">
-                    bruwer.danie@gmail.com
+                  <a href={`mailto:${settings.contactEmail}`} className="text-gray-300 hover:text-emerald-300 transition-colors break-all">
+                    {settings.contactEmail}
                   </a>
                 </li>
               </ul>
@@ -145,29 +154,14 @@ export const Footer = () => {
             {/* Business Hours */}
             <div>
               <h3 className="font-bold text-white text-lg mb-6 pb-3 border-b border-emerald-700/30">Business Hours</h3>
-              <ul className="space-y-4 text-gray-300">
-                <li className="flex justify-between items-center">
-                  <span className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-emerald-300" />
-                    Monday - Friday
-                  </span>
-                  <span className="font-medium text-emerald-300">7:00 - 17:00</span>
-                </li>
-                <li className="flex justify-between items-center">
-                  <span className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-emerald-300" />
-                    Saturday
-                  </span>
-                  <span className="font-medium text-emerald-300">8:00 - 13:00</span>
-                </li>
-                <li className="flex justify-between items-center">
-                  <span className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-emerald-300" />
-                    Sunday
-                  </span>
-                  <span className="font-medium text-emerald-300">Closed</span>
-                </li>
-              </ul>
+              <div className="space-y-2 text-gray-300 whitespace-pre-line">
+                {settings.businessHours.split('\n').map((line, index) => (
+                  <div key={index} className="flex items-start gap-2">
+                    <Clock className="h-4 w-4 text-emerald-300 mt-1 flex-shrink-0" />
+                    <span>{line}</span>
+                  </div>
+                ))}
+              </div>
               
               <div className="mt-8 space-y-3">
                 <div className="flex items-center gap-2 text-sm text-emerald-300">
@@ -193,10 +187,10 @@ export const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-center md:text-left">
               <p className="text-gray-400 text-sm">
-                &copy; {new Date().getFullYear()} 3D'S SAWMILL. All rights reserved.
+                &copy; {new Date().getFullYear()} {settings.companyName}. All rights reserved.
               </p>
               <p className="text-gray-500 text-xs mt-1">
-                Specializing in structural and industrial timber since 1990
+                {settings.footerCopyrightText}
               </p>
             </div>
             

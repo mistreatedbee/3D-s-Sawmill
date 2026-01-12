@@ -115,6 +115,20 @@ export const AdminSiteSettings = () => {
                 placeholder="Nationwide Delivery Available"
               />
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Hero Image URL
+              </label>
+              <Input
+                value={formData.heroImage || ''}
+                onChange={(e) => handleChange('heroImage', e.target.value)}
+                placeholder="/logo.jpeg or https://example.com/image.jpg"
+              />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Enter the path or URL to your hero image. You can upload images via the Gallery page.
+              </p>
+            </div>
           </div>
         </div>
       )
@@ -186,6 +200,20 @@ export const AdminSiteSettings = () => {
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                 rows={3}
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                About Image URL (optional)
+              </label>
+              <Input
+                value={formData.aboutImage || ''}
+                onChange={(e) => handleChange('aboutImage', e.target.value)}
+                placeholder="https://example.com/about-image.jpg"
+              />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Enter the URL to an image for the About section
+              </p>
             </div>
           </div>
         </div>
@@ -417,6 +445,341 @@ export const AdminSiteSettings = () => {
           </div>
         </div>
       )
+    },
+    {
+      id: 'footer',
+      label: 'Footer Content',
+      content: (
+        <div className="space-y-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Footer Section Settings</h3>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Footer Tagline
+              </label>
+              <Input
+                value={formData.footerTagline || ''}
+                onChange={(e) => handleChange('footerTagline', e.target.value)}
+                placeholder="For all structural and industrial timber"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Footer Description
+              </label>
+              <textarea
+                value={formData.footerDescription || ''}
+                onChange={(e) => handleChange('footerDescription', e.target.value)}
+                placeholder="Your trusted partner for premium timber solutions..."
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                rows={4}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Copyright Text
+              </label>
+              <Input
+                value={formData.footerCopyrightText || ''}
+                onChange={(e) => handleChange('footerCopyrightText', e.target.value)}
+                placeholder="Specializing in structural and industrial timber since 1990"
+              />
+            </div>
+          </div>
+        </div>
+      )
+    },
+    {
+      id: 'company',
+      label: 'Company Info',
+      content: (
+        <div className="space-y-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Company Information</h3>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Company Name
+              </label>
+              <Input
+                value={formData.companyName || ''}
+                onChange={(e) => handleChange('companyName', e.target.value)}
+                placeholder="3D'S SAWMILL"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Company Logo URL
+              </label>
+              <Input
+                value={formData.companyLogo || ''}
+                onChange={(e) => handleChange('companyLogo', e.target.value)}
+                placeholder="/logo.jpeg"
+              />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Enter the path to your company logo image
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Year Established
+              </label>
+              <Input
+                value={formData.companyEstablished || ''}
+                onChange={(e) => handleChange('companyEstablished', e.target.value)}
+                placeholder="1990"
+              />
+            </div>
+          </div>
+        </div>
+      )
+    },
+    {
+      id: 'cta',
+      label: 'CTA Section',
+      content: (
+        <div className="space-y-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Call-to-Action Section</h3>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                CTA Title
+              </label>
+              <Input
+                value={formData.ctaTitle || ''}
+                onChange={(e) => handleChange('ctaTitle', e.target.value)}
+                placeholder="Ready to Start Your Project?"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                CTA Description
+              </label>
+              <textarea
+                value={formData.ctaDescription || ''}
+                onChange={(e) => handleChange('ctaDescription', e.target.value)}
+                placeholder="Get a custom quote for your specific timber requirements..."
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                rows={3}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                CTA Button Text
+              </label>
+              <Input
+                value={formData.ctaButtonText || ''}
+                onChange={(e) => handleChange('ctaButtonText', e.target.value)}
+                placeholder="Request Custom Quote"
+              />
+            </div>
+          </div>
+        </div>
+      )
+    },
+    {
+      id: 'stats',
+      label: 'Stats Section',
+      content: (
+        <div className="space-y-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Statistics Section</h3>
+          
+          <div className="space-y-6">
+            <div className="border-t dark:border-gray-600 pt-4">
+              <h4 className="font-semibold text-gray-900 dark:text-white mb-4">Stat 1</h4>
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Value
+                  </label>
+                  <Input
+                    value={formData.stat1Value || ''}
+                    onChange={(e) => handleChange('stat1Value', e.target.value)}
+                    placeholder="30+"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Label
+                  </label>
+                  <Input
+                    value={formData.stat1Label || ''}
+                    onChange={(e) => handleChange('stat1Label', e.target.value)}
+                    placeholder="Years Experience"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Suffix
+                  </label>
+                  <Input
+                    value={formData.stat1Suffix || ''}
+                    onChange={(e) => handleChange('stat1Suffix', e.target.value)}
+                    placeholder="Since 1990"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="border-t dark:border-gray-600 pt-4">
+              <h4 className="font-semibold text-gray-900 dark:text-white mb-4">Stat 2</h4>
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Value
+                  </label>
+                  <Input
+                    value={formData.stat2Value || ''}
+                    onChange={(e) => handleChange('stat2Value', e.target.value)}
+                    placeholder="100%"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Label
+                  </label>
+                  <Input
+                    value={formData.stat2Label || ''}
+                    onChange={(e) => handleChange('stat2Label', e.target.value)}
+                    placeholder="Quality Guarantee"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Suffix
+                  </label>
+                  <Input
+                    value={formData.stat2Suffix || ''}
+                    onChange={(e) => handleChange('stat2Suffix', e.target.value)}
+                    placeholder="Premium Timber"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="border-t dark:border-gray-600 pt-4">
+              <h4 className="font-semibold text-gray-900 dark:text-white mb-4">Stat 3</h4>
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Value
+                  </label>
+                  <Input
+                    value={formData.stat3Value || ''}
+                    onChange={(e) => handleChange('stat3Value', e.target.value)}
+                    placeholder="24/7"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Label
+                  </label>
+                  <Input
+                    value={formData.stat3Label || ''}
+                    onChange={(e) => handleChange('stat3Label', e.target.value)}
+                    placeholder="Support"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Suffix
+                  </label>
+                  <Input
+                    value={formData.stat3Suffix || ''}
+                    onChange={(e) => handleChange('stat3Suffix', e.target.value)}
+                    placeholder="Always Available"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="border-t dark:border-gray-600 pt-4">
+              <h4 className="font-semibold text-gray-900 dark:text-white mb-4">Stat 4</h4>
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Value
+                  </label>
+                  <Input
+                    value={formData.stat4Value || ''}
+                    onChange={(e) => handleChange('stat4Value', e.target.value)}
+                    placeholder="500+"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Label
+                  </label>
+                  <Input
+                    value={formData.stat4Label || ''}
+                    onChange={(e) => handleChange('stat4Label', e.target.value)}
+                    placeholder="Projects"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Suffix
+                  </label>
+                  <Input
+                    value={formData.stat4Suffix || ''}
+                    onChange={(e) => handleChange('stat4Suffix', e.target.value)}
+                    placeholder="Completed"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    },
+    {
+      id: 'seo',
+      label: 'SEO & Metadata',
+      content: (
+        <div className="space-y-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">SEO & Metadata Settings</h3>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Meta Title
+              </label>
+              <Input
+                value={formData.metaTitle || ''}
+                onChange={(e) => handleChange('metaTitle', e.target.value)}
+                placeholder="3D'S SAWMILL - Premium Timber Solutions"
+              />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Recommended length: 50-60 characters
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Meta Description
+              </label>
+              <textarea
+                value={formData.metaDescription || ''}
+                onChange={(e) => handleChange('metaDescription', e.target.value)}
+                placeholder="South Africa's trusted timber supplier..."
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                rows={3}
+              />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Recommended length: 150-160 characters
+              </p>
+            </div>
+          </div>
+        </div>
+      )
     }
   ];
 
@@ -425,10 +788,15 @@ export const AdminSiteSettings = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Site Settings</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Site Settings - Content Management System</h1>
           <p className="text-gray-600 dark:text-gray-400 mt-2">
-            Edit your website content, hero section, about section, and contact information
+            Manage all website content including hero section, about section, features, footer, CTA, stats, and more
           </p>
+          <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+            <p className="text-sm text-blue-800 dark:text-blue-300">
+              💡 <strong>Tip:</strong> Changes saved here will immediately reflect on the live website. Use the Gallery page to upload and manage images.
+            </p>
+          </div>
         </div>
         <div className="flex gap-3">
           <Button
