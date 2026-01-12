@@ -3,7 +3,6 @@ import { Save, RotateCcw, AlertCircle, CheckCircle } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Card } from '../components/ui/Card';
-import { Tabs } from '../components/ui/Tabs';
 import { useSiteSettings } from '../hooks/useSiteSettings';
 
 export const AdminSiteSettings = () => {
@@ -13,6 +12,7 @@ export const AdminSiteSettings = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [activeTab, setActiveTab] = useState('hero');
 
   // Load current frontend content into form fields
   useEffect(() => {
@@ -34,6 +34,12 @@ export const AdminSiteSettings = () => {
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [hasUnsavedChanges]);
+
+  // Handle tab change - ONLY changes the visible tab, does NOT save
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId);
+    // No saving happens here - just switches the visible content
+  };
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev: any) => ({
@@ -888,7 +894,28 @@ export const AdminSiteSettings = () => {
       {/* Form */}
       <form onSubmit={handleSubmit}>
         <Card className="p-6">
-          <Tabs tabs={tabs} />
+          {/* Tab Navigation - Clicking ONLY changes tab, does NOT save */}
+          <div className="flex space-x-1 rounded-xl bg-gray-100 dark:bg-gray-800 p-1 mb-6">
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => handleTabChange(tab.id)}
+                className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-medium transition-all ${
+                  activeTab === tab.id
+                    ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Tab Content - Shows the active tab's content */}
+          <div className="mt-6">
+            {tabs.find(tab => tab.id === activeTab)?.content}
+          </div>
 
           <div className="flex justify-between items-center mt-8 pt-6 border-t dark:border-gray-700">
             <div className="text-sm text-gray-600 dark:text-gray-400">
