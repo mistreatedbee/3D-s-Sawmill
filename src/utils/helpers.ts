@@ -9,6 +9,10 @@ export const getLocalStorage = <T,>(key: string, initialValue: T): T => {
     
     // For JWT tokens (auth_token), return as-is without parsing
     if (key === 'auth_token' && typeof item === 'string') {
+      // Normalize common bad stored values so we don't send "Bearer null"
+      if (item === 'null' || item === 'undefined' || item.trim() === '') {
+        return initialValue;
+      }
       return item as T;
     }
     
@@ -27,8 +31,16 @@ export const getLocalStorage = <T,>(key: string, initialValue: T): T => {
 export const setLocalStorage = <T,>(key: string, value: T): void => {
   try {
     // For JWT tokens (auth_token), store as-is without stringifying
-    if (key === 'auth_token' && typeof value === 'string') {
-      window.localStorage.setItem(key, value);
+    if (key === 'auth_token') {
+      // If clearing the token, remove the key entirely
+      if (value === null || value === undefined) {
+        window.localStorage.removeItem(key);
+        return;
+      }
+      if (typeof value === 'string') {
+        window.localStorage.setItem(key, value);
+        return;
+      }
     } else {
       window.localStorage.setItem(key, JSON.stringify(value));
     }
