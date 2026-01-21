@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { getLocalStorage } from '../utils/helpers';
+import { authFetch } from '../utils/authFetch';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -13,11 +14,7 @@ export const useAdminProducts = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_URL}/products/admin/all`, {
-        headers: {
-          'Authorization': `Bearer ${getToken()}`,
-        },
-      });
+      const response = await authFetch(`${API_URL}/products/admin/all`);
 
       if (!response.ok) throw new Error('Failed to fetch products');
       return await response.json();
@@ -34,11 +31,10 @@ export const useAdminProducts = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_URL}/products`, {
+      const response = await authFetch(`${API_URL}/products`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${getToken()}`,
         },
         body: JSON.stringify(productData),
       });
@@ -58,11 +54,10 @@ export const useAdminProducts = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_URL}/products/${productId}`, {
+      const response = await authFetch(`${API_URL}/products/${productId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${getToken()}`,
         },
         body: JSON.stringify(productData),
       });
@@ -82,11 +77,8 @@ export const useAdminProducts = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_URL}/products/${productId}`, {
+      const response = await authFetch(`${API_URL}/products/${productId}`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${getToken()}`,
-        },
       });
 
       if (!response.ok) throw new Error('Failed to delete product');

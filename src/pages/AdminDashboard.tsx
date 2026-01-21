@@ -13,7 +13,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 export const AdminDashboard = () => {
   const navigate = useNavigate();
   const { getAnalytics, getTopProducts, loading: analyticsLoading } = useAdminAnalytics();
-  const { loading: orderLoading } = useAdminOrders();
+  const { getOrderStats, loading: orderLoading } = useAdminOrders();
 
   const [analytics, setAnalytics] = useState<any>(null);
   const [topProducts, setTopProducts] = useState<any[]>([]);
@@ -25,28 +25,19 @@ export const AdminDashboard = () => {
 
   const loadDashboardData = async () => {
     try {
-      const token = localStorage.getItem('auth_token');
-      const [analyticsData, productsData, ordersResponse] = await Promise.all([
+      const [analyticsData, productsData, statsData] = await Promise.all([
         getAnalytics(),
         getTopProducts(5),
-        fetch(`${API_URL}/orders`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        })
+        getOrderStats(),
       ]);
 
       setAnalytics(analyticsData);
       setTopProducts(productsData);
-      
-      // Get real order stats from database
-      if (ordersResponse.ok) {
-        const orders = await ordersResponse.json();
-        const stats = {
-          pending: orders.filter((o: any) => o.status === 'pending').length,
-          processing: orders.filter((o: any) => o.status === 'processing' || o.status === 'confirmed' || o.status === 'packed').length,
-          delivered: orders.filter((o: any) => o.status === 'delivered').length,
-        };
-        setOrderStats(stats);
-      }
+      setOrderStats({
+        pending: statsData?.statusBreakdown?.pending || 0,
+        processing: statsData?.statusBreakdown?.processing || 0,
+        delivered: statsData?.statusBreakdown?.delivered || 0,
+      });
     } catch (err) {
       console.error('Failed to load dashboard data:', err);
     }

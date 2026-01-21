@@ -5,6 +5,7 @@ import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { Modal } from '../components/ui/Modal';
 import { formatters } from '../utils/formatters';
+import { authFetch } from '../utils/authFetch';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -43,12 +44,7 @@ export function AdminReviewModeration() {
 
   const loadReviews = async () => {
     try {
-      const token = localStorage.getItem('auth_token');
-      const response = await fetch(`${API_URL}/reviews?status=${filterStatus}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const response = await authFetch(`${API_URL}/reviews?status=${filterStatus}`);
       if (response.ok) {
         const data = await response.json();
         setReviews(Array.isArray(data) ? data : data.reviews || []);
@@ -61,11 +57,9 @@ export function AdminReviewModeration() {
   const handleApprove = async (reviewId: string) => {
     setUpdatingId(reviewId);
     try {
-      const token = localStorage.getItem('auth_token');
-      const response = await fetch(`${API_URL}/reviews/${reviewId}/approve`, {
+      const response = await authFetch(`${API_URL}/reviews/${reviewId}/approve`, {
         method: 'PATCH',
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ status: 'approved' })
@@ -84,11 +78,9 @@ export function AdminReviewModeration() {
   const handleReject = async (reviewId: string) => {
     setUpdatingId(reviewId);
     try {
-      const token = localStorage.getItem('auth_token');
-      const response = await fetch(`${API_URL}/reviews/${reviewId}/reject`, {
+      const response = await authFetch(`${API_URL}/reviews/${reviewId}/reject`, {
         method: 'PATCH',
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ status: 'rejected', reason: rejectionReason })
