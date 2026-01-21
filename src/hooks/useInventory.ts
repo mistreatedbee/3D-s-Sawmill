@@ -46,7 +46,8 @@ export const useInventory = () => {
 
       if (!response.ok) throw new Error('Failed to update product');
       const data = await response.json();
-      setProducts(products.map(p => p.id === data.id ? data : p));
+      const normalized = { ...data, id: data._id || data.id };
+      setProducts(products.map(p => p.id === normalized.id ? normalized : p));
     } catch (err) {
       console.error('Failed to update product:', err);
       throw err;
@@ -67,7 +68,8 @@ export const useInventory = () => {
 
       if (!response.ok) throw new Error('Failed to add product');
       const data = await response.json();
-      setProducts([...products, data]);
+      const normalized = { ...data, id: data._id || data.id };
+      setProducts([...products, normalized]);
     } catch (err) {
       console.error('Failed to add product:', err);
       throw err;

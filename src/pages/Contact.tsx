@@ -9,6 +9,8 @@ import { useSiteSettings } from '../hooks/useSiteSettings';
 
 export const Contact = () => {
   const { settings, isLoading: settingsLoading } = useSiteSettings();
+  const contactEmail = settings?.contactEmail || 'bruwer.danie@gmail.com';
+  const contactPhone = settings?.contactPhone || '072 504 9184';
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -30,9 +32,8 @@ export const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const email = settings?.contactEmail || 'bruwer.danie@gmail.com';
       // Create mailto link with form data
-      const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(`Contact Form: ${formData.subject}`)}&body=${encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`)}`;
+      const mailtoLink = `mailto:${contactEmail}?subject=${encodeURIComponent(`Contact Form: ${formData.subject}`)}&body=${encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`)}`;
       
       // Open email client
       window.location.href = mailtoLink;
@@ -48,7 +49,7 @@ export const Contact = () => {
   };
 
   const handleCall = () => {
-    const phone = settings?.contactPhone?.replace(/\s/g, '') || '0725049184';
+    const phone = contactPhone.replace(/\s/g, '') || '0725049184';
     window.location.href = `tel:${phone}`;
   };
 
@@ -60,7 +61,7 @@ export const Contact = () => {
   };
 
   return (
-    <div className="space-y-20 pb-20 pt-24 bg-gradient-to-b from-stone-50 to-white">
+    <div className="space-y-20 pb-20 bg-wood-50 dark:bg-gray-950 transition-colors duration-300">
       {/* Enhanced Header */}
       <section className="container mx-auto px-4">
         <div className="text-center max-w-3xl mx-auto mb-16">
@@ -70,9 +71,9 @@ export const Contact = () => {
             transition={{ duration: 0.6 }}
             className="inline-block mb-4"
           >
-            <div className="px-4 py-2 rounded-full bg-gradient-to-r from-emerald-50 to-amber-50 border border-emerald-100 inline-flex items-center gap-2">
-              <div className="w-2 h-2 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full animate-pulse"></div>
-              <span className="text-sm font-semibold text-emerald-800">Get in Touch</span>
+            <div className="px-4 py-2 rounded-full bg-gradient-to-r from-wood-50 to-forest-50 border border-wood-200/60 inline-flex items-center gap-2">
+              <div className="w-2 h-2 bg-gradient-to-r from-wood-600 to-forest-600 rounded-full animate-pulse"></div>
+              <span className="text-sm font-semibold text-wood-800">Get in Touch</span>
             </div>
           </motion.div>
           
@@ -83,7 +84,7 @@ export const Contact = () => {
             className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6"
           >
             Contact{' '}
-            <span className="bg-gradient-to-r from-emerald-700 to-emerald-900 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-wood-800 to-forest-700 bg-clip-text text-transparent">
               3D'S SAWMILL
             </span>
           </motion.h1>
@@ -94,7 +95,7 @@ export const Contact = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-xl text-gray-600 mb-4"
           >
-            <span className="font-semibold text-emerald-800">"{settings?.aboutSubtitle || 'For all structural and industrial timber'}"</span>
+            <span className="font-semibold text-wood-800">"{settings?.aboutSubtitle || 'For all structural and industrial timber'}"</span>
           </motion.p>
           
           <motion.p
@@ -118,17 +119,17 @@ export const Contact = () => {
             viewport={{ once: true }}
             whileHover={{ y: -5 }}
           >
-            <Card className="text-center h-full cursor-pointer hover:shadow-xl transition-all duration-300 border border-emerald-100 hover:border-emerald-200"
+            <Card className="text-center h-full cursor-pointer hover:shadow-xl transition-all duration-300 border border-gray-200/60 dark:border-gray-700/40 hover:border-wood-200"
                   onClick={handleCall}>
               <div className="flex justify-center mb-4">
-                <div className="p-3 bg-gradient-to-br from-emerald-100 to-emerald-50 rounded-xl">
-                  <Phone className="h-6 w-6 text-emerald-600" />
+                <div className="p-3 bg-gradient-to-br from-wood-100 to-wood-50 rounded-xl">
+                  <Phone className="h-6 w-6 text-wood-700" />
                 </div>
               </div>
               <h3 className="text-lg font-bold text-gray-900 mb-2">
                 Call Us
               </h3>
-              <p className="text-lg font-semibold text-emerald-700 mb-2">{settings?.contactPhone || '072 504 9184'}</p>
+              <p className="text-lg font-semibold text-wood-800 mb-2">{contactPhone}</p>
               <p className="text-sm text-gray-500 mt-2">
                 Click to call directly
               </p>
@@ -136,7 +137,6 @@ export const Contact = () => {
                 <Button 
                   variant="outline" 
                   size="sm"
-                  className="border-emerald-200 text-emerald-700 hover:bg-emerald-50"
                 >
                   Tap to Call
                 </Button>
@@ -152,26 +152,23 @@ export const Contact = () => {
             transition={{ delay: 0.1 }}
             whileHover={{ y: -5 }}
           >
-            <Card className="text-center h-full cursor-pointer hover:shadow-xl transition-all duration-300 border border-amber-100 hover:border-amber-200">
+            <Card className="text-center h-full cursor-pointer hover:shadow-xl transition-all duration-300 border border-gray-200/60 dark:border-gray-700/40 hover:border-wood-200">
               <div className="flex justify-center mb-4">
-                <div className="p-3 bg-gradient-to-br from-amber-100 to-amber-50 rounded-xl">
-                  <Mail className="h-6 w-6 text-amber-600" />
+                <div className="p-3 bg-gradient-to-br from-wood-100 to-wood-50 rounded-xl">
+                  <Mail className="h-6 w-6 text-wood-700" />
                 </div>
               </div>
               <h3 className="text-lg font-bold text-gray-900 mb-2">
                 Email
               </h3>
-              <p className="text-emerald-700 font-medium break-all">bruwer.danie@gmail.com</p>
+              <p className="text-wood-800 font-medium break-all">{contactEmail}</p>
               <p className="text-sm text-gray-500 mt-2">
                 We respond within 24 hours
               </p>
               <div className="mt-4">
-                <a 
-                  href="mailto:bruwer.danie@gmail.com" 
-                  className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-lg hover:bg-amber-100 transition-colors"
-                >
+                <Button variant="outline" size="sm" onClick={() => { window.location.href = `mailto:${contactEmail}`; }}>
                   Send Email
-                </a>
+                </Button>
               </div>
             </Card>
           </motion.div>
@@ -184,10 +181,10 @@ export const Contact = () => {
             transition={{ delay: 0.2 }}
             whileHover={{ y: -5 }}
           >
-            <Card className="text-center h-full hover:shadow-xl transition-all duration-300 border border-stone-100 hover:border-stone-200">
+            <Card className="text-center h-full hover:shadow-xl transition-all duration-300 border border-gray-200/60 dark:border-gray-700/40 hover:border-wood-200">
               <div className="flex justify-center mb-4">
-                <div className="p-3 bg-gradient-to-br from-stone-100 to-stone-50 rounded-xl">
-                  <MapPin className="h-6 w-6 text-stone-600" />
+                <div className="p-3 bg-gradient-to-br from-wood-100 to-wood-50 rounded-xl">
+                  <MapPin className="h-6 w-6 text-wood-700" />
                 </div>
               </div>
               <h3 className="text-lg font-bold text-gray-900 mb-2">
@@ -216,24 +213,24 @@ export const Contact = () => {
             transition={{ delay: 0.3 }}
             whileHover={{ y: -5 }}
           >
-            <Card className="text-center h-full cursor-pointer hover:shadow-xl transition-all duration-300 border border-green-100 hover:border-green-200"
+            <Card className="text-center h-full cursor-pointer hover:shadow-xl transition-all duration-300 border border-gray-200/60 dark:border-gray-700/40 hover:border-wood-200"
                   onClick={handleWhatsApp}>
               <div className="flex justify-center mb-4">
-                <div className="p-3 bg-gradient-to-br from-green-100 to-green-50 rounded-xl">
-                  <MessageSquare className="h-6 w-6 text-green-600" />
+                <div className="p-3 bg-gradient-to-br from-forest-100 to-forest-50 rounded-xl">
+                  <MessageSquare className="h-6 w-6 text-forest-700" />
                 </div>
               </div>
               <h3 className="text-lg font-bold text-gray-900 mb-2">
                 WhatsApp
               </h3>
-              <p className="text-lg font-semibold text-green-700 mb-2">{settings?.contactPhone || '072 504 9184'}</p>
+              <p className="text-lg font-semibold text-forest-800 mb-2">{contactPhone}</p>
               <p className="text-sm text-gray-500 mt-2">
                 Quick chat for quotes
               </p>
               <div className="mt-4">
                 <Button 
                   size="sm"
-                  className="bg-green-600 hover:bg-green-700 text-white"
+                  variant="secondary"
                 >
                   Message on WhatsApp
                 </Button>
@@ -286,7 +283,7 @@ export const Contact = () => {
         <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
           Our Location in Lothair
         </h2>
-        <div className="rounded-2xl overflow-hidden shadow-xl border border-stone-200">
+        <div className="rounded-2xl overflow-hidden shadow-xl border border-gray-200 dark:border-gray-800">
           <MapComponent
             height="500px"
             locations={[
@@ -323,15 +320,15 @@ export const Contact = () => {
             </p>
           </motion.div>
 
-          <Card className="border border-stone-200 shadow-lg">
+          <Card className="border border-gray-200/60 dark:border-gray-700/40 shadow-lg">
             {submitted && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg"
+                className="mb-6 p-4 bg-gradient-to-r from-forest-50 to-wood-50 border border-forest-200 rounded-lg"
               >
                 <div className="flex items-center gap-3">
-                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  <CheckCircle className="h-5 w-5 text-forest-700" />
                   <div>
                     <p className="text-green-800 font-medium">
                       Message sent successfully!
@@ -357,7 +354,7 @@ export const Contact = () => {
                     onChange={handleChange}
                     placeholder="John Smith"
                     required
-                    className="border-stone-300 focus:border-emerald-500 focus:ring-emerald-500"
+                    className="border-gray-300 focus:border-wood-500 focus:ring-wood-500"
                   />
                 </div>
 
@@ -372,7 +369,7 @@ export const Contact = () => {
                     onChange={handleChange}
                     placeholder="john@example.com"
                     required
-                    className="border-stone-300 focus:border-emerald-500 focus:ring-emerald-500"
+                    className="border-gray-300 focus:border-wood-500 focus:ring-wood-500"
                   />
                 </div>
               </div>
@@ -388,7 +385,7 @@ export const Contact = () => {
                   onChange={handleChange}
                   placeholder="Timber quote, product inquiry, etc."
                   required
-                  className="border-stone-300 focus:border-emerald-500 focus:ring-emerald-500"
+                  className="border-gray-300 focus:border-wood-500 focus:ring-wood-500"
                 />
               </div>
 
@@ -403,7 +400,7 @@ export const Contact = () => {
                   placeholder="Please describe your timber requirements, quantities, project details, or any questions you have..."
                   rows={6}
                   required
-                  className="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-wood-500 focus:border-wood-500 transition-colors"
                 />
               </div>
 
@@ -412,7 +409,7 @@ export const Contact = () => {
                   type="submit"
                   disabled={isSubmitting}
                   size="lg"
-                  className="flex-1 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white shadow-lg hover:shadow-xl transition-all"
+                  className="flex-1"
                   leftIcon={<Send className="h-4 w-4" />}
                 >
                   {isSubmitting ? 'Opening Email...' : 'Send Message via Email'}
@@ -421,9 +418,9 @@ export const Contact = () => {
                 <Button
                   type="button"
                   size="lg"
-                  variant="outline"
+                  variant="secondary"
                   onClick={handleWhatsApp}
-                  className="flex-1 border-green-600 text-green-700 hover:bg-green-50"
+                  className="flex-1"
                 >
                   Chat on WhatsApp
                 </Button>
@@ -438,7 +435,7 @@ export const Contact = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="bg-gradient-to-b from-white to-stone-50 py-20">
+      <section className="bg-gradient-to-b from-white to-wood-50 dark:from-gray-950 dark:to-gray-900/50 py-20">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
             Frequently Asked Questions
@@ -478,9 +475,9 @@ export const Contact = () => {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card className="h-full hover:shadow-lg transition-shadow border border-stone-100">
+                <Card className="h-full hover:shadow-lg transition-shadow border border-gray-200/60 dark:border-gray-700/40">
                   <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                    <div className="w-2 h-2 bg-wood-600 rounded-full"></div>
                     {faq.question}
                   </h3>
                   <p className="text-gray-600">{faq.answer}</p>
@@ -497,15 +494,15 @@ export const Contact = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="bg-gradient-to-r from-emerald-600 to-emerald-800 rounded-2xl p-8 text-white text-center"
+          className="bg-gradient-to-r from-wood-800 to-forest-700 rounded-2xl p-8 text-white text-center"
         >
           <h3 className="text-2xl font-bold mb-4">Need Immediate Assistance?</h3>
-          <p className="text-lg mb-6">Call us directly at <span className="font-bold text-2xl">{settings?.contactPhone || '072 504 9184'}</span></p>
+          <p className="text-lg mb-6">Call us directly at <span className="font-bold text-2xl">{contactPhone}</span></p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               onClick={handleCall}
               size="lg"
-              className="bg-white text-emerald-700 hover:bg-emerald-50"
+              className="bg-white text-wood-800 hover:bg-wood-50"
             >
               <Phone className="h-5 w-5 mr-2" />
               Call Now
@@ -514,7 +511,7 @@ export const Contact = () => {
               onClick={handleWhatsApp}
               size="lg"
               variant="outline"
-              className="bg-transparent border-white text-white hover:bg-emerald-700"
+              className="bg-transparent border-white text-white hover:bg-white/10"
             >
               <MessageSquare className="h-5 w-5 mr-2" />
               WhatsApp Message

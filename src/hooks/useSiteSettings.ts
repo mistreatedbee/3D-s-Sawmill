@@ -104,6 +104,28 @@ export const useSiteSettings = () => {
     fetchSettings();
   }, []);
 
+  // Keep public-facing content in sync when the tab regains focus (e.g. after admin updates)
+  useEffect(() => {
+    const onFocus = () => {
+      // Avoid spamming network while loading; fetchSettings handles state safely
+      fetchSettings();
+    };
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchSettings();
+      }
+    };
+
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    return () => {
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
+  }, []);
+
   const updateSettings = async (updatedSettings: Partial<SiteSettings>) => {
     try {
       const token = localStorage.getItem('auth_token');

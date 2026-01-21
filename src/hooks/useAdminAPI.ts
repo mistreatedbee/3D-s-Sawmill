@@ -9,6 +9,27 @@ export const useAdminProducts = () => {
 
   const getToken = () => getLocalStorage<string | null>('auth_token', null);
 
+  const getProducts = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`${API_URL}/products/admin/all`, {
+        headers: {
+          'Authorization': `Bearer ${getToken()}`,
+        },
+      });
+
+      if (!response.ok) throw new Error('Failed to fetch products');
+      return await response.json();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      setError(message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const createProduct = async (productData: any) => {
     setLoading(true);
     setError(null);
@@ -79,7 +100,7 @@ export const useAdminProducts = () => {
     }
   };
 
-  return { createProduct, updateProduct, deleteProduct, loading, error };
+  return { getProducts, createProduct, updateProduct, deleteProduct, loading, error };
 };
 
 export const useAdminOrders = () => {

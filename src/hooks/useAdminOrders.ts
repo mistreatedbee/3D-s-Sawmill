@@ -23,8 +23,7 @@ export const useAdminOrders = () => {
       });
 
       if (!response.ok) throw new Error('Failed to fetch orders');
-      const data = await response.json();
-      return data;
+      return await response.json();
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unknown error';
       setError(message);
@@ -82,6 +81,39 @@ export const useAdminOrders = () => {
     }
   }, []);
 
+  const updateOrderFinancials = useCallback(async (
+    orderId: string,
+    payload: {
+      items?: Array<{ productId: string; quantity: number; unitPrice: number }>;
+      shippingCost?: number;
+      tax?: number;
+      discount?: number;
+      adminNotes?: string;
+    }
+  ) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`${API_URL}/orders/${orderId}/financials`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getToken()}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) throw new Error('Failed to update order totals');
+      return await response.json();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      setError(message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   const getOrderStats = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -109,6 +141,7 @@ export const useAdminOrders = () => {
     getAllOrders,
     updateOrderStatus,
     updatePaymentStatus,
+    updateOrderFinancials,
     getOrderStats,
   };
 };

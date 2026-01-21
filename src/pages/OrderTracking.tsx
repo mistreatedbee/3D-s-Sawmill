@@ -8,7 +8,7 @@ import { formatters } from '../utils/formatters';
 
 export const OrderTracking = () => {
   const { orderId } = useParams<{ orderId: string }>();
-  const { getOrderById, loading, error } = useOrders();
+  const { getOrderById, cancelOrder, loading, error } = useOrders();
   const [order, setOrder] = useState<any>(null);
   const [expandedTimeline, setExpandedTimeline] = useState(false);
 
@@ -26,6 +26,17 @@ export const OrderTracking = () => {
       }
     } catch (err) {
       console.error('Failed to load order:', err);
+    }
+  };
+
+  const handleCancel = async () => {
+    if (!orderId) return;
+    if (!window.confirm('Cancel this order/request?')) return;
+    try {
+      await cancelOrder(orderId, 'Cancelled by customer');
+      await loadOrder();
+    } catch (err) {
+      console.error('Failed to cancel order:', err);
     }
   };
 
@@ -184,9 +195,13 @@ export const OrderTracking = () => {
         <Card className="p-6">
           <h2 className="text-xl font-bold mb-4">Shipping Address</h2>
           <div className="space-y-1 text-sm">
-            <p className="font-semibold">{order.shippingAddress.street}</p>
-            <p>{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zip}</p>
-            <p>{order.shippingAddress.country}</p>
+          <p className="font-semibold">{order.shippingAddress?.street}</p>
+          <p>
+            {order.shippingAddress?.city},{' '}
+            {(order.shippingAddress?.province || order.shippingAddress?.state || '').trim()}{' '}
+            {(order.shippingAddress?.postalCode || order.shippingAddress?.zip || order.shippingAddress?.zipCode || '').trim()}
+          </p>
+          <p>{order.shippingAddress?.country}</p>
           </div>
         </Card>
       </div>
@@ -198,7 +213,7 @@ export const OrderTracking = () => {
           {order.items.map((item: any, idx: number) => (
             <div key={idx} className="flex justify-between items-center pb-4 border-b last:border-b-0">
               <div className="flex-1">
-                <p className="font-bold">{item.name}</p>
+                <p className="font-bold">{item.productId?.name || item.productName || item.name || 'Product'}</p>
                 {item.specifications && (
                   <p className="text-sm text-gray-600">
                     {Object.entries(item.specifications).map(([key, val]) => `${key}: ${val}`).join(' • ')}
@@ -207,7 +222,9 @@ export const OrderTracking = () => {
               </div>
               <div className="text-right">
                 <p className="font-bold">{item.quantity}x</p>
-                <p className="text-sm text-gray-600">{formatters.formatPrice(item.price * item.quantity)}</p>
+                <p className="text-sm text-gray-600">
+                  {formatters.formatPrice((item.unitPrice || item.productId?.price || item.price || 0) * item.quantity)}
+                </p>
               </div>
             </div>
           ))}
@@ -234,7 +251,7 @@ export const OrderTracking = () => {
           </div>
           <div className="flex justify-between">
             <span>Shipping:</span>
-            <span>{formatters.formatPrice(order.shipping)}</span>
+            <span>{formatters.formatPrice(order.shippingCost || order.shipping || 0)}</span>
           </div>
           <div className="flex justify-between text-lg font-bold pt-2 border-t">
             <span>Total:</span>
@@ -250,22 +267,26 @@ export const OrderTracking = () => {
       </Card>
 
       {/* Customer Notes */}
-      {order.customerNotes && (
+      {(order.notes || order.customerNotes) && (
         <Card className="p-6 bg-blue-50">
           <h2 className="text-lg font-bold mb-2">Your Notes</h2>
-          <p className="text-gray-700">{order.customerNotes}</p>
+          <p className="text-gray-700">{order.notes || order.customerNotes}</p>
         </Card>
       )}
 
       {/* Actions */}
       <div className="flex gap-4">
-        {['pending', 'confirmed', 'processing'].includes(order.status) && (
-          <Button variant="outline" className="text-red-600">Cancel Order</Button>
+        {['pending', 'quoted', 'invoiced', 'confirmed', 'processing'].includes(order.status) && (
+          <Button variant="outline" className="text-red-600" onClick={handleCancel}>
+            Cancel Request
+          </Button>
         )}
         {order.status === 'delivered' && (
           <Button>Leave a Review</Button>
         )}
-        <Button variant="outline">Download Invoice</Button>
+        <Button variant="outline" disabled title="PDF download not configured yet">
+          Download (coming soon)
+        </Button>
       </div>
     </div>
   );

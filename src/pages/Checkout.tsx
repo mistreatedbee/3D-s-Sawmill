@@ -8,6 +8,7 @@ import { Select } from '../components/ui/Select';
 import { Card } from '../components/ui/Card';
 import { ArrowLeft, ShoppingCart, FileText, CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { getLocalStorage } from '../utils/helpers';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -18,6 +19,7 @@ interface OrderFormData {
   deliveryMethod: 'pickup' | 'delivery';
   shippingAddress: string;
   city: string;
+  province: string;
   postalCode: string;
   specialInstructions: string;
 }
@@ -36,11 +38,13 @@ export const Checkout = () => {
     deliveryMethod: 'delivery',
     shippingAddress: '',
     city: '',
+    province: '',
     postalCode: '',
     specialInstructions: '',
   });
   const [orderId, setOrderId] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [requestType, setRequestType] = useState<'quote' | 'invoice'>('invoice');
 
   if (items.length === 0 && currentStep === 'review') {
     return (
@@ -59,37 +63,57 @@ export const Checkout = () => {
     );
   }
 
-  const handleSubmitOrder = async () => {
+  const handleSubmitOrder = async (type: 'quote' | 'invoice') => {
     setIsSubmitting(true);
     try {
+      const token = getLocalStorage<string | null>('auth_token', null);
+
       // Call API to create order
       const response = await fetch(`${API_URL}/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          items,
-          total: cartTotal,
+          requestType: type,
+          items: items.map((item) => ({
+            productId: item.id,
+            quantity: item.quantity,
+          })),
           customerName: formData.customerName,
           customerEmail: formData.customerEmail,
-          phoneNumber: formData.phoneNumber,
+          customerPhone: formData.phoneNumber,
           deliveryMethod: formData.deliveryMethod,
-          shippingAddress:
-            formData.deliveryMethod === 'delivery' ? formData.shippingAddress : 'Pickup',
-          city: formData.city,
-          postalCode: formData.postalCode,
-          specialInstructions: formData.specialInstructions,
-          userId: user?.id,
+          shippingAddress: formData.deliveryMethod === 'delivery' ? {
+            street: formData.shippingAddress,
+            city: formData.city,
+            province: formData.province,
+            state: formData.province,
+            postalCode: formData.postalCode,
+            zip: formData.postalCode,
+            zipCode: formData.postalCode,
+            country: 'South Africa',
+          } : {
+            street: 'Pickup',
+            city: '',
+            province: '',
+            state: '',
+            postalCode: '',
+            zip: '',
+            zipCode: '',
+            country: 'South Africa',
+          },
+          notes: formData.specialInstructions,
         }),
       });
 
       if (!response.ok) throw new Error('Failed to create order');
 
       const order = await response.json();
-      setOrderId(order.data.id);
+      setOrderId(order._id || order.id);
       clearCart();
+      setRequestType(type);
       setCurrentStep('confirmation');
     } catch (error) {
       alert('Error creating order. Please try again.');
@@ -310,6 +334,16 @@ export const Checkout = () => {
                           required
                         />
                         <Input
+                          label="Province / Region"
+                          value={formData.province}
+                          onChange={(e) =>
+                            setFormData({ ...formData, province: e.target.value })
+                          }
+                          required
+                        />
+                      </div>
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <Input
                           label="Postal Code"
                           value={formData.postalCode}
                           onChange={(e) =>
@@ -431,7 +465,7 @@ export const Checkout = () => {
                     <div>
                       <p className="text-gray-600 dark:text-gray-400">Address</p>
                       <p className="font-semibold text-gray-900 dark:text-white">
-                        {formData.shippingAddress}, {formData.city} {formData.postalCode}
+                        {formData.shippingAddress}, {formData.city}, {formData.province} {formData.postalCode}
                       </p>
                     </div>
                   )}
@@ -444,11 +478,10 @@ export const Checkout = () => {
                 <FileText className="h-5 w-5 text-blue-600 flex-shrink-0" />
                 <div>
                   <p className="font-semibold text-blue-900 dark:text-blue-100">
-                    Invoice Will Be Generated
+                    Choose Quote or Invoice
                   </p>
                   <p className="text-sm text-blue-800 dark:text-blue-200">
-                    After you confirm, you'll receive an invoice via email with all order details.
-                    Our team will contact you to confirm the order.
+                    Request a quote (recommended for bulk/custom needs) or request an invoice to proceed.
                   </p>
                 </div>
               </div>
@@ -463,11 +496,19 @@ export const Checkout = () => {
                 Back
               </Button>
               <Button
-                onClick={handleSubmitOrder}
+                onClick={() => handleSubmitOrder('quote')}
                 disabled={isSubmitting}
                 className="flex-1"
               >
-                {isSubmitting ? 'Creating Order...' : 'Confirm & Generate Invoice'}
+                {isSubmitting ? 'Submitting...' : 'Request Quote'}
+              </Button>
+              <Button
+                onClick={() => handleSubmitOrder('invoice')}
+                disabled={isSubmitting}
+                className="flex-1"
+                variant="primary"
+              >
+                {isSubmitting ? 'Submitting...' : 'Request Invoice'}
               </Button>
             </div>
           </motion.div>
@@ -499,7 +540,9 @@ export const Checkout = () => {
                   Order ID: <span className="font-mono">{orderId}</span>
                 </p>
                 <p className="text-gray-600 dark:text-gray-400 mb-6">
-                  An invoice and confirmation email have been sent to your email address.
+                  {requestType === 'quote'
+                    ? 'Your quote request has been received. Our team will contact you with a quote.'
+                    : 'Your invoice request has been received. Our team will contact you to confirm the order.'}
                 </p>
                 <div className="flex gap-3">
                   <Button

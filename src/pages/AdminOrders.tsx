@@ -10,25 +10,30 @@ import { formatters } from '../utils/formatters';
 interface Order {
   _id: string;
   orderNumber: string;
-  userId: string;
+  userId: any;
   items: Array<{
-    productId: string;
-    productName: string;
+    productId: any;
+    productName?: string;
     quantity: number;
-    price: number;
+    unitPrice?: number;
   }>;
-  status: 'pending' | 'confirmed' | 'processing' | 'packed' | 'shipped' | 'out_for_delivery' | 'delivered' | 'cancelled' | 'refunded';
+  requestType?: 'quote' | 'invoice';
+  status: 'pending' | 'quoted' | 'invoiced' | 'completed' | 'confirmed' | 'processing' | 'packed' | 'shipped' | 'out_for_delivery' | 'delivered' | 'cancelled' | 'refunded';
   paymentStatus: 'pending' | 'completed' | 'failed' | 'refunded';
   total: number;
   tax: number;
-  shipping: number;
+  shippingCost: number;
+  subtotal: number;
   createdAt: string;
   shippingAddress: {
     street: string;
     city: string;
-    state: string;
+    province?: string;
+    state?: string;
     country: string;
-    zipCode: string;
+    postalCode?: string;
+    zipCode?: string;
+    zip?: string;
   };
   trackingNumber?: string;
   estimatedDelivery?: string;
@@ -39,9 +44,10 @@ interface ExpandedOrder {
 }
 
 export function AdminOrders() {
-  const { getAllOrders, updateOrderStatus, updatePaymentStatus, getOrderStats, loading, error } = useAdminOrders();
+  const { getAllOrders, updateOrderStatus, updatePaymentStatus, updateOrderFinancials, getOrderStats, loading, error } = useAdminOrders();
   const [orders, setOrders] = useState<Order[]>([]);
   const [stats, setStats] = useState<any>(null);
+  const [pagination, setPagination] = useState<{ total: number; page: number; pages: number } | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [filterStatus, setFilterStatus] = useState<string>('');
   const [filterPayment, setFilterPayment] = useState<string>('');
@@ -49,6 +55,15 @@ export function AdminOrders() {
   const [statusUpdates, setStatusUpdates] = useState<{ [key: string]: string }>({});
   const [paymentUpdates, setPaymentUpdates] = useState<{ [key: string]: string }>({});
   const [noteInput, setNoteInput] = useState<{ [key: string]: string }>({});
+  const [financialDrafts, setFinancialDrafts] = useState<{
+    [orderId: string]: {
+      shippingCost?: number;
+      tax?: number;
+      discount?: number;
+      adminNotes?: string;
+      items?: Array<{ productId: string; quantity: number; unitPrice: number }>;
+    };
+  }>({});
   const [updatingId, setUpdatingId] = useState<string>('');
 
   const limit = 10;
@@ -61,7 +76,8 @@ export function AdminOrders() {
     try {
       const status = filterStatus || undefined;
       const data = await getAllOrders(currentPage, limit, status);
-      setOrders(data);
+      setOrders(data?.orders || []);
+      setPagination(data?.pagination || null);
       const statsData = await getOrderStats();
       setStats(statsData);
     } catch (err) {
@@ -104,6 +120,68 @@ export function AdminOrders() {
     }
   };
 
+  const initFinancialDraft = (order: Order) => {
+    setFinancialDrafts((prev) => {
+      if (prev[order._id]) return prev;
+      return {
+        ...prev,
+        [order._id]: {
+          shippingCost: order.shippingCost || 0,
+          tax: order.tax || 0,
+          discount: (order as any).discount || 0,
+          adminNotes: (order as any).adminNotes || '',
+          items: order.items.map((item: any) => ({
+            productId: String(item.productId?._id || item.productId),
+            quantity: item.quantity,
+            unitPrice: Number(item.unitPrice || item.productId?.price || 0),
+          })),
+        },
+      };
+    });
+  };
+
+  const updateDraftField = (orderId: string, field: string, value: any) => {
+    setFinancialDrafts((prev) => ({
+      ...prev,
+      [orderId]: {
+        ...(prev[orderId] || {}),
+        [field]: value,
+      },
+    }));
+  };
+
+  const updateDraftItem = (orderId: string, productId: string, patch: Partial<{ quantity: number; unitPrice: number }>) => {
+    setFinancialDrafts((prev) => {
+      const current = prev[orderId] || {};
+      const items = Array.isArray(current.items) ? current.items : [];
+      const nextItems = items.map((it) => (it.productId === productId ? { ...it, ...patch } : it));
+      return {
+        ...prev,
+        [orderId]: { ...current, items: nextItems },
+      };
+    });
+  };
+
+  const handleSaveFinancials = async (orderId: string) => {
+    const draft = financialDrafts[orderId];
+    if (!draft) return;
+    setUpdatingId(orderId);
+    try {
+      await updateOrderFinancials(orderId, {
+        items: draft.items,
+        shippingCost: draft.shippingCost,
+        tax: draft.tax,
+        discount: draft.discount,
+        adminNotes: draft.adminNotes,
+      });
+      await loadData();
+    } catch (err) {
+      console.error('Error updating totals:', err);
+    } finally {
+      setUpdatingId('');
+    }
+  };
+
   const getStatusColor = (status: string) => {
     const colors: { [key: string]: string } = {
       'pending': 'bg-yellow-100 text-yellow-800',
@@ -128,9 +206,6 @@ export function AdminOrders() {
     };
     return colors[status] || 'bg-gray-100 text-gray-800';
   };
-
-  const getToken = () => getLocalStorage<string | null>('auth_token', null);
-
 
   if (error) {
     return (
@@ -246,6 +321,11 @@ export function AdminOrders() {
                       <Badge className={getStatusColor(order.status)}>
                         {order.status.replace('_', ' ')}
                       </Badge>
+                      {order.requestType && (
+                        <p className="text-xs text-gray-500 mt-1">
+                          {order.requestType === 'quote' ? 'Quote request' : 'Invoice request'}
+                        </p>
+                      )}
                     </div>
                     <div>
                       <p className="text-sm text-gray-600">Payment</p>
@@ -266,12 +346,20 @@ export function AdminOrders() {
 
                 {expandedOrders[order._id] && (
                   <div className="p-4 bg-white border-t border-gray-200 space-y-4">
+                    {/*
+                      Initialize draft on first expand.
+                      Note: this is safe because initFinancialDraft is idempotent per orderId.
+                    */}
+                    {initFinancialDraft(order)}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <h3 className="font-semibold text-gray-900 mb-2">Shipping Address</h3>
                         <p className="text-sm text-gray-600">
                           {order.shippingAddress.street}<br />
-                          {order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zipCode}<br />
+                          {order.shippingAddress.city},{' '}
+                          {(order.shippingAddress.province || order.shippingAddress.state || '').trim()}{' '}
+                          {(order.shippingAddress.postalCode || order.shippingAddress.zipCode || order.shippingAddress.zip || '').trim()}
+                          <br />
                           {order.shippingAddress.country}
                         </p>
                       </div>
@@ -304,11 +392,53 @@ export function AdminOrders() {
                         <tbody>
                           {order.items.map((item, idx) => (
                             <tr key={idx} className="border-b border-gray-100">
-                              <td className="py-2 px-2 text-gray-900">{item.productName}</td>
-                              <td className="text-center py-2 px-2 text-gray-600">{item.quantity}</td>
-                              <td className="text-right py-2 px-2 text-gray-600">{formatters.formatPrice(item.price)}</td>
+                              <td className="py-2 px-2 text-gray-900">
+                                {item.productId?.name || item.productName || 'Unknown product'}
+                              </td>
+                              <td className="text-center py-2 px-2">
+                                <input
+                                  type="number"
+                                  min={1}
+                                  className="w-20 px-2 py-1 border border-gray-200 rounded"
+                                  value={
+                                    financialDrafts[order._id]?.items?.find((x) => x.productId === String(item.productId?._id || item.productId))?.quantity ??
+                                    item.quantity
+                                  }
+                                  onChange={(e) =>
+                                    updateDraftItem(
+                                      order._id,
+                                      String(item.productId?._id || item.productId),
+                                      { quantity: Math.max(1, Number(e.target.value)) }
+                                    )
+                                  }
+                                />
+                              </td>
+                              <td className="text-right py-2 px-2 text-gray-600">
+                                <input
+                                  type="number"
+                                  min={0}
+                                  step="0.01"
+                                  className="w-28 px-2 py-1 border border-gray-200 rounded text-right"
+                                  value={
+                                    financialDrafts[order._id]?.items?.find((x) => x.productId === String(item.productId?._id || item.productId))?.unitPrice ??
+                                    (item.unitPrice || item.productId?.price || 0)
+                                  }
+                                  onChange={(e) =>
+                                    updateDraftItem(
+                                      order._id,
+                                      String(item.productId?._id || item.productId),
+                                      { unitPrice: Math.max(0, Number(e.target.value)) }
+                                    )
+                                  }
+                                />
+                              </td>
                               <td className="text-right py-2 px-2 font-medium text-gray-900">
-                                {formatters.formatPrice(item.price * item.quantity)}
+                                {formatters.formatPrice(
+                                  (financialDrafts[order._id]?.items?.find((x) => x.productId === String(item.productId?._id || item.productId))?.unitPrice ??
+                                    (item.unitPrice || item.productId?.price || 0)) *
+                                    (financialDrafts[order._id]?.items?.find((x) => x.productId === String(item.productId?._id || item.productId))?.quantity ??
+                                      item.quantity)
+                                )}
                               </td>
                             </tr>
                           ))}
@@ -316,10 +446,66 @@ export function AdminOrders() {
                       </table>
                     </div>
 
-                    <div className="bg-gray-50 p-4 rounded-lg space-y-2">
+                    <div className="bg-gray-50 p-4 rounded-lg space-y-3">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1">Shipping</label>
+                          <input
+                            type="number"
+                            min={0}
+                            step="0.01"
+                            className="w-full px-2 py-1 border border-gray-200 rounded"
+                            value={financialDrafts[order._id]?.shippingCost ?? order.shippingCost}
+                            onChange={(e) => updateDraftField(order._id, 'shippingCost', Math.max(0, Number(e.target.value)))}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1">Tax</label>
+                          <input
+                            type="number"
+                            min={0}
+                            step="0.01"
+                            className="w-full px-2 py-1 border border-gray-200 rounded"
+                            value={financialDrafts[order._id]?.tax ?? order.tax}
+                            onChange={(e) => updateDraftField(order._id, 'tax', Math.max(0, Number(e.target.value)))}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1">Discount</label>
+                          <input
+                            type="number"
+                            min={0}
+                            step="0.01"
+                            className="w-full px-2 py-1 border border-gray-200 rounded"
+                            value={(financialDrafts[order._id]?.discount ?? (order as any).discount) || 0}
+                            onChange={(e) => updateDraftField(order._id, 'discount', Math.max(0, Number(e.target.value)))}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs text-gray-600 mb-1">Admin Notes (shown in admin only)</label>
+                        <input
+                          type="text"
+                          className="w-full px-2 py-1 border border-gray-200 rounded"
+                          value={financialDrafts[order._id]?.adminNotes ?? (order as any).adminNotes ?? ''}
+                          onChange={(e) => updateDraftField(order._id, 'adminNotes', e.target.value)}
+                        />
+                      </div>
+
+                      <div className="flex justify-end">
+                        <Button
+                          onClick={() => handleSaveFinancials(order._id)}
+                          disabled={updatingId === order._id}
+                          className="px-4"
+                        >
+                          {updatingId === order._id ? 'Saving...' : 'Save Quote/Invoice Totals'}
+                        </Button>
+                      </div>
+
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600">Subtotal</span>
-                        <span className="font-medium text-gray-900">{formatters.formatPrice(order.total - order.tax - order.shipping)}</span>
+                        <span className="font-medium text-gray-900">{formatters.formatPrice(order.subtotal ?? (order.total - order.tax - order.shippingCost))}</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600">Tax</span>
@@ -327,7 +513,7 @@ export function AdminOrders() {
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600">Shipping</span>
-                        <span className="font-medium text-gray-900">{formatters.formatPrice(order.shipping)}</span>
+                        <span className="font-medium text-gray-900">{formatters.formatPrice(order.shippingCost)}</span>
                       </div>
                       <div className="flex justify-between text-lg border-t border-gray-200 pt-2">
                         <span className="font-bold text-gray-900">Total</span>
@@ -346,6 +532,9 @@ export function AdminOrders() {
                           >
                             <option value={order.status}>{order.status}</option>
                             <option value="pending">Pending</option>
+                            <option value="quoted">Quoted</option>
+                            <option value="invoiced">Invoiced</option>
+                            <option value="completed">Completed</option>
                             <option value="confirmed">Confirmed</option>
                             <option value="processing">Processing</option>
                             <option value="packed">Packed</option>
@@ -419,7 +608,7 @@ export function AdminOrders() {
           </span>
           <Button
             onClick={() => setCurrentPage(prev => prev + 1)}
-            disabled={orders.length < limit}
+            disabled={pagination ? currentPage >= pagination.pages : orders.length < limit}
             variant="outline"
           >
             Next

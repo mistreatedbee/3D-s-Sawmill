@@ -15,6 +15,7 @@ import { Contact } from './pages/Contact';
 import { CustomerDashboard } from './pages/CustomerDashboard';
 import { WishlistPage } from './pages/WishlistPage';
 import { AdvancedSearch } from './pages/AdvancedSearch';
+import { About } from './pages/About';
 // Admin Pages
 import { AdminDashboard } from './pages/AdminDashboard';
 import { AdminProducts } from './pages/AdminProducts';
@@ -30,8 +31,6 @@ import { AdminSiteSettings } from './pages/AdminSiteSettings';
 import { VendorInventory } from './pages/VendorInventory';
 import { Gallery } from './pages/Gallery';
 import { CustomerPortal } from './pages/CustomerPortal';
-// Placeholders for other pages
-const About = () => <div className="p-20 text-center">About Page Coming Soon</div>;
 // Protected Route Component
 const ProtectedRoute = ({
   children,

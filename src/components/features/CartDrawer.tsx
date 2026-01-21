@@ -14,6 +14,9 @@ export const CartDrawer = () => {
     updateQuantity,
     cartTotal
   } = useCart();
+
+  const getImageUrl = (img: any) => (typeof img === 'string' ? img : img?.url);
+
   return <AnimatePresence>
       {isCartOpen && <>
           <motion.div initial={{
@@ -59,7 +62,7 @@ export const CartDrawer = () => {
                   </Button>
                 </div> : items.map(item => <div key={item.id} className="flex gap-4">
                     <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-100 shrink-0">
-                      <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover" />
+                      <img src={getImageUrl(item.images[0])} alt={item.name} className="w-full h-full object-cover" />
                     </div>
                     <div className="flex-1">
                       <h3 className="font-medium text-gray-900 dark:text-white line-clamp-1">

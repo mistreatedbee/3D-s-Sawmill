@@ -4,7 +4,6 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Select } from '../components/ui/Select';
 import { Card } from '../components/ui/Card';
-import { useInventory } from '../hooks/useInventory';
 import { useAdminProducts } from '../hooks/useAdminAPI';
 import { formatCurrency } from '../utils/formatters';
 import { Product, ProductCategory } from '../types';
@@ -48,8 +47,10 @@ interface BulkPricingItem {
 }
 
 export const AdminProducts = () => {
-  const { products, isLoading: inventoryLoading, refetch } = useInventory();
-  const { createProduct, updateProduct, deleteProduct, loading, error } = useAdminProducts();
+  const { getProducts, createProduct, updateProduct, deleteProduct, loading, error } = useAdminProducts();
+
+  const [products, setProducts] = useState<Product[]>([]);
+  const [inventoryLoading, setInventoryLoading] = useState(true);
 
   const [formData, setFormData] = useState<FormData>(DEFAULT_FORM_DATA);
   const [isEditing, setIsEditing] = useState(false);
@@ -59,6 +60,28 @@ export const AdminProducts = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [newTag, setNewTag] = useState('');
   const [bulkPricingForm, setBulkPricingForm] = useState<BulkPricingItem>({ minQuantity: 0, discountPrice: 0 });
+
+  const fetchAdminProducts = async () => {
+    setInventoryLoading(true);
+    try {
+      const data = await getProducts();
+      const productsWithId = (Array.isArray(data) ? data : []).map((p: any) => ({
+        ...p,
+        id: p._id || p.id,
+      }));
+      setProducts(productsWithId);
+    } catch (err) {
+      console.error('Failed to fetch admin products:', err);
+      setErrorMessage(err instanceof Error ? err.message : 'Failed to fetch products');
+    } finally {
+      setInventoryLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAdminProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target as any;
@@ -166,7 +189,7 @@ export const AdminProducts = () => {
       setIsEditing(false);
       
       // Refetch products to update the list
-      await refetch();
+      await fetchAdminProducts();
       
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
@@ -213,7 +236,7 @@ export const AdminProducts = () => {
         setSuccessMessage('Product deleted successfully!');
         
         // Refetch products to update the list
-        await refetch();
+        await fetchAdminProducts();
         
         setTimeout(() => setSuccessMessage(''), 3000);
       } catch (err) {
